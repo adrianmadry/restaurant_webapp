@@ -26,12 +26,12 @@ CREATE TABLE ingredients(
     ingredient_id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     unit VARCHAR(255) NOT NULL,
-    stock INTEGER CHECK (stock >= 0)
+    stock DECIMAL(10,1) CHECK (stock >= 0)
 );
 
 -- Junction table to match ingredients to meals
 CREATE TABLE meal_ingredients(
-    meal_id INT REFERENCES meals(meal_id),
+    meal_id INT REFERENCES meals(meal_id) ON DELETE CASCADE,
     ingredient_id INT REFERENCES ingredients(ingredient_id),
     quantity_required INT NOT NULL CHECK (quantity_required > 0),
     PRIMARY KEY (meal_id, ingredient_id)

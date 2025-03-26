@@ -12,12 +12,14 @@ public class Order {
     protected OrderStatus orderStatus;
 
     public Order() {
-
+        this.orderStatus = OrderStatus.PENDING;
     }
 
     public Order(int userId) {
         this.userId = userId;
+        this.orderStatus = OrderStatus.PENDING;
     }
+
 
     public Order(int orderId, int userId, String orderDate, OrderStatus orderStatus) {
         this.orderId = orderId;
@@ -58,9 +60,11 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    
-
-
+    @Override
+    public String toString() {
+        return "Order [orderId=" + orderId + ", userId=" + userId + ", orderDate=" + orderDate + ", orderStatus="
+                + orderStatus + "]";
+    }
 
 
 }
