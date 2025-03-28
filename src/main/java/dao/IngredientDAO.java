@@ -13,7 +13,7 @@ import util.DatabaseConnection;
 public class IngredientDAO {
 
 // CREATE - Add new ingredient to database
-    public static boolean createIngredient(Ingredient ingredient) {
+    public boolean createIngredient(Ingredient ingredient) {
         String sql = "INSERT INTO ingredients (name, unit, stock) VALUES (?, ?, ?) RETURNING ingredient_id";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -39,7 +39,7 @@ public class IngredientDAO {
     }
 
     // READ - Get ingredient by ID
-    public static Ingredient getIngredientById(int ingredientId) {
+    public Ingredient getIngredientById(int ingredientId) {
         String sql = "SELECT * FROM ingredients WHERE ingredient_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -64,7 +64,7 @@ public class IngredientDAO {
     }
 
      // READ - Get all ingredients
-     public static List<Ingredient> getAllIngredients() {
+     public List<Ingredient> getAllIngredients() {
         String sql = "SELECT * FROM ingredients";
         List<Ingredient> ingredientList = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class IngredientDAO {
     }
 
     // UPDATE - Update ingredient data
-    public static boolean updateIngredient(Ingredient ingredient) {
+    public boolean updateIngredient(Ingredient ingredient) {
         String sql = "UPDATE ingredients SET name = ?, unit = ?, stock = ? WHERE ingredient_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -112,7 +112,7 @@ public class IngredientDAO {
     }
 
     // DELETE - Delete Ingredient by ID
-    public static boolean deleteIngredientById(int ingredientId) {
+    public boolean deleteIngredientById(int ingredientId) {
         String sql = "DELETE FROM ingredients WHERE ingredient_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();

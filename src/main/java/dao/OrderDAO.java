@@ -14,7 +14,7 @@ import util.DatabaseConnection;
 public class OrderDAO {
 
     // CREATE - Add new order to database
-    public static boolean createOrder(Order order) {
+    public boolean createOrder(Order order) {
         String sql = "INSERT INTO orders (user_id, status) VALUES (?, ?) RETURNING order_id, order_date";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -41,7 +41,7 @@ public class OrderDAO {
     }
 
     // READ - Get order by ID
-    public static Order getOrderById(int orderId) {
+    public Order getOrderById(int orderId) {
         String sql = "SELECT * FROM orders WHERE order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -68,7 +68,7 @@ public class OrderDAO {
     }
 
      // READ - Get all orders
-     public static List<Order> getAllOrders() {
+     public List<Order> getAllOrders() {
         String sql = "SELECT * FROM orders";
         List<Order> orderList = new ArrayList<>();
 
@@ -98,7 +98,7 @@ public class OrderDAO {
     }
 
     // UPDATE - Update order data
-    public static boolean updateOrder(Order order) {
+    public boolean updateOrder(Order order) {
         String sql = "UPDATE orders SET user_id = ?,  status = ? WHERE order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -117,7 +117,7 @@ public class OrderDAO {
     }
 
     // DELETE - Delete order by ID
-    public static boolean deleteOrderById(int orderId) {
+    public boolean deleteOrderById(int orderId) {
         String sql = "DELETE FROM orders WHERE order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();

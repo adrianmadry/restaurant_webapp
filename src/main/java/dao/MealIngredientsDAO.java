@@ -13,8 +13,17 @@ import entities.MealIngredients;
 import util.DatabaseConnection;
 
 public class MealIngredientsDAO {
+
+    private final MealDAO mealDao;
+    private final IngredientDAO ingredientDao;
+
+    public MealIngredientsDAO() {
+        this.mealDao = new MealDAO();
+        this.ingredientDao = new IngredientDAO();
+    }
+
    // CREATE - Add new Meal Ingredients match to datbase
-    public static boolean createMealIngredients(MealIngredients mealIng) {
+    public boolean createMealIngredients(MealIngredients mealIng) {
         String sql = "INSERT INTO meal_ingredients (meal_id, ingredient_id, quantity_required) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -33,8 +42,9 @@ public class MealIngredientsDAO {
     }
 
     // READ - Get Meal Ingredients match
-    public static MealIngredients getMealIngredientsByIds(int mealId, int ingredientId) {
+    public MealIngredients getMealIngredientsByIds(int mealId, int ingredientId) {
         String sql = "SELECT * FROM meal_ingredients WHERE meal_id = ? AND ingredient_id = ?";
+        
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -46,8 +56,8 @@ public class MealIngredientsDAO {
                     if (resultSet.next()) { 
                         int quantityReq = resultSet.getInt("quantity_required");
                         // retrieve objects for meal and ingredient from DB 
-                        Meal meal = MealDAO.getMealById(mealId);
-                        Ingredient ing = IngredientDAO.getIngredientById(ingredientId);
+                        Meal meal = this.mealDao.getMealById(mealId);
+                        Ingredient ing = this.ingredientDao.getIngredientById(ingredientId);
 
                         return new MealIngredients(meal, ing, quantityReq);  
                     }
@@ -60,7 +70,7 @@ public class MealIngredientsDAO {
     }
 
      // READ - Get list of all Meal Ingredients Matches
-     public static List<MealIngredients> getAllMealIngredients() {
+     public List<MealIngredients> getAllMealIngredients() {
         String sql = "SELECT * FROM meal_ingredients";
         List<MealIngredients> mealIngredientsList = new ArrayList<>();
 
@@ -74,8 +84,8 @@ public class MealIngredientsDAO {
                         int ingredientId = resultSet.getInt("ingredient_id");
                         int quantityReq = resultSet.getInt("quantity_required");
                         // retrieve objects for meal and ingredient from DB 
-                        Meal meal = MealDAO.getMealById(mealId);
-                        Ingredient ing = IngredientDAO.getIngredientById(ingredientId);
+                        Meal meal = this.mealDao.getMealById(mealId);
+                        Ingredient ing = this.ingredientDao.getIngredientById(ingredientId);
                         
                         MealIngredients mealIng = new MealIngredients(meal, ing, quantityReq); 
                         mealIngredientsList.add(mealIng);
@@ -90,7 +100,7 @@ public class MealIngredientsDAO {
     }
 
     // UPDATE - Update Meal Ingredients match data
-    public static boolean updateMealIngredients(MealIngredients mealIngredient) {
+    public boolean updateMealIngredients(MealIngredients mealIngredient) {
         String sql = "UPDATE meal_ingredients SET quantity_required = ? WHERE meal_id = ? AND ingredient_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -109,7 +119,7 @@ public class MealIngredientsDAO {
     }
 
     // DELETE - Delete Meal Ingredients match by IDs
-    public static boolean deleteMealIngredientsByIds(int mealId, int ingredientId) {
+    public boolean deleteMealIngredientsByIds(int mealId, int ingredientId) {
         String sql = "DELETE FROM meal_ingredients WHERE meal_id = ? AND ingredient_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
