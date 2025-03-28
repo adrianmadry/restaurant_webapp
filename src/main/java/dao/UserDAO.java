@@ -13,7 +13,7 @@ import util.DatabaseConnection;
 public class UserDAO {
 
     // CREATE - Add new user to datbase
-    public static boolean createUser(User user) {
+    public boolean createUser(User user) {
         String sql = "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?::role_type) RETURNING user_id, registration_date";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -41,7 +41,7 @@ public class UserDAO {
     }
 
     // READ - Get user by ID
-    public static User getUserById(int userId) {
+    public User getUserById(int userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -71,7 +71,7 @@ public class UserDAO {
     }
 
      // READ - Get all users
-     public static List<User> getAllUsers() {
+     public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
         List<User> usersList = new ArrayList<>();
 
@@ -104,7 +104,7 @@ public class UserDAO {
     }
 
     // UPDATE - Update user data
-    public static boolean updateUser(User user) {
+    public boolean updateUser(User user) {
         String sql = "UPDATE users SET username = ?, password = ?, email = ?, role = ?::role_type WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -125,7 +125,7 @@ public class UserDAO {
     }
 
     // DELETE - Delete User by ID
-    public static boolean deleteUserById(int userId) {
+    public boolean deleteUserById(int userId) {
         String sql = "DELETE FROM users WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();

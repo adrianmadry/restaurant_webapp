@@ -12,8 +12,12 @@ import util.DatabaseConnection;
 
 public class MealDAO {
 
+    public MealDAO() {
+
+    }
+
     // CREATE - Add new meal to datbase
-    public static boolean createMeal(Meal meal) {
+    public boolean createMeal(Meal meal) {
         String sql = "INSERT INTO meals (name, type, description, price)" +  
                       "VALUES (?, ?, ?, ?) RETURNING meal_id";
 
@@ -41,7 +45,7 @@ public class MealDAO {
     }
 
     // READ - Get meal by ID
-    public static Meal getMealById(int mealId) {
+    public Meal getMealById(int mealId) {
         String sql = "SELECT * FROM meals WHERE meal_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -67,7 +71,7 @@ public class MealDAO {
     }
 
     // READ - Get all meals
-    public static List<Meal> getAllMeals() {
+    public List<Meal> getAllMeals() {
         String sql = "SELECT * FROM meals";
         List<Meal> mealsList = new ArrayList<>();
 
@@ -96,7 +100,7 @@ public class MealDAO {
     }
 
     // UPDATE - Update meal data
-    public static boolean updateMeal(Meal meal) {
+    public boolean updateMeal(Meal meal) {
         String sql = "UPDATE meals SET name = ?, type = ?, description = ?, price = ? " + 
                       "WHERE meal_id = ?";
 
@@ -118,7 +122,7 @@ public class MealDAO {
     }
 
     // DELETE - Delete Meal by ID
-    public static boolean deleteMealById(int mealId) {
+    public boolean deleteMealById(int mealId) {
         String sql = "DELETE FROM meals WHERE meal_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();

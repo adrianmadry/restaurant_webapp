@@ -13,8 +13,16 @@ import util.DatabaseConnection;
 
 public class OrderMealsDAO {
 
+    private final OrderDAO orderDao;
+    private final MealDAO mealDao;
+
+    public OrderMealsDAO() {
+        this.orderDao = new OrderDAO();
+        this.mealDao = new MealDAO();
+    }
+
     // CREATE - Add new Order Meals match to datbase
-    public static boolean createOrderMeals(OrderMeals orderMeals) {
+    public boolean createOrderMeals(OrderMeals orderMeals) {
         String sql = "INSERT INTO order_meals (order_id, meal_id, quantity) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -33,9 +41,9 @@ public class OrderMealsDAO {
     }
 
     // READ - Get Order Meals match
-    public static OrderMeals getOrderMealsByIds(int orderId, int mealId) {
+    public OrderMeals getOrderMealsByIds(int orderId, int mealId) {
         String sql = "SELECT * FROM order_meals WHERE order_id = ? AND meal_id = ?";
-
+        
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, orderId);
@@ -46,8 +54,9 @@ public class OrderMealsDAO {
                     if (resultSet.next()) { 
                         int quantity = resultSet.getInt("quantity");
                         // retrieve objects for meal and order from DB 
-                        Order order = OrderDAO.getOrderById(orderId);
-                        Meal meal = MealDAO.getMealById(mealId);
+
+                        Order order = this.orderDao.getOrderById(orderId);
+                        Meal meal = this.mealDao.getMealById(mealId);
                         
                         return new OrderMeals(order, meal, quantity);  
                     }
@@ -60,7 +69,7 @@ public class OrderMealsDAO {
     }
 
      // READ - Get list of all Order Meals Matches
-     public static List<OrderMeals> getAllOrderMeals() {
+     public List<OrderMeals> getAllOrderMeals() {
         String sql = "SELECT * FROM order_meals";
         List<OrderMeals> OrderMealsList = new ArrayList<>();
 
@@ -74,8 +83,8 @@ public class OrderMealsDAO {
                         int mealId = resultSet.getInt("meal_id");
                         int quantity = resultSet.getInt("quantity");
                         // retrieve objects for order and from DB 
-                        Order order = OrderDAO.getOrderById(orderId);
-                        Meal meal = MealDAO.getMealById(mealId);
+                        Order order = this.orderDao.getOrderById(orderId);
+                        Meal meal = this.mealDao.getMealById(mealId);
 
                         OrderMeals orderMeals = new OrderMeals(order, meal, quantity); 
                         OrderMealsList.add(orderMeals);
@@ -90,7 +99,7 @@ public class OrderMealsDAO {
     }
 
     // UPDATE - Update Order Meals match data
-    public static boolean updateOrderMeals(OrderMeals orderMeals) {
+    public boolean updateOrderMeals(OrderMeals orderMeals) {
         String sql = "UPDATE order_meals SET quantity = ? WHERE meal_id = ? AND order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -109,7 +118,7 @@ public class OrderMealsDAO {
     }
 
     // DELETE - Delete Order Meals match by IDs
-    public static boolean deleteOrderMealsByIds(int orderId, int mealId) {
+    public boolean deleteOrderMealsByIds(int orderId, int mealId) {
         String sql = "DELETE FROM order_meals WHERE order_id = ? AND meal_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
