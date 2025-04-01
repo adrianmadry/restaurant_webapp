@@ -12,6 +12,10 @@ import util.DatabaseConnection;
 
 public class UserDAO {
 
+    public UserDAO() {
+        
+    }
+
     // CREATE - Add new user to datbase
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?::role_type) RETURNING user_id, registration_date";

@@ -13,6 +13,10 @@ import util.DatabaseConnection;
 
 public class OrderDAO {
 
+    public OrderDAO() {
+        
+    }
+
     // CREATE - Add new order to database
     public boolean createOrder(Order order) {
         String sql = "INSERT INTO orders (user_id, status) VALUES (?, ?) RETURNING order_id, order_date";

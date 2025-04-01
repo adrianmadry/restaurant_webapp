@@ -12,6 +12,10 @@ import util.DatabaseConnection;
 
 public class IngredientDAO {
 
+    public IngredientDAO() {
+        
+    }
+
 // CREATE - Add new ingredient to database
     public boolean createIngredient(Ingredient ingredient) {
         String sql = "INSERT INTO ingredients (name, unit, stock) VALUES (?, ?, ?) RETURNING ingredient_id";
