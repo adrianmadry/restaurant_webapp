@@ -17,6 +17,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+
   </properties>
 
   <dependencies>
@@ -100,5 +104,15 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <resources>
+      <resource>
+            <directory>src/main/webapp</directory>
+            <filtering>true</filtering>
+            <includes>
+                <include>**/*.jsp</include>
+            </includes>
+      </resource>
+    </resources>
   </build>
 </project>
