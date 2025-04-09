@@ -15,14 +15,14 @@
     <!-- Navigation bar -->
     <div class="topbar">
             <div class="navbar">
-                <a href="">HOME</a>
-                <a href="">MENU</a>
-                <a href="">ABOUT</a>
-                <a href="">BOOK A TABLE</a>
-                <a href="">CONTACT</a>
+                <a href="">Home</a>
+                <a href="">Menu</a>
+                <a href="">About</a>
+                <a href="">Book a Table</a>
+                <a href="">Contact</a>
             </div>
             <div class="loginbar">
-                <a href="">LOG IN</a>
+                <a href="">Log In</a>
             </div>
             
     </div>
@@ -32,7 +32,7 @@
         <h1> Welcome to Our Restaurant</h1> 
         <p>Click the button below to view the menu.</p> 
         <form action="menu" method="get">
-            <button id="orderbutton" type="submit">View Menu and Order !</button>
+            <button class="orderbutton" type="submit">View Menu and Order !</button>
         </form>
     </div>
    
