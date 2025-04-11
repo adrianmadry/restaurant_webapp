@@ -1,3 +1,8 @@
+.bgimage {
+    background-image: url('../img/bgmenu2.png');
+    background-color: rgb(233, 158, 61);
+}
+
 .menu-container {
     color: white;
     text-align: center;
