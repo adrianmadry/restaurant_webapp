@@ -36,6 +36,7 @@ public class OrderDAO {
 
                     }
                 }
+                System.out.println("New order created in database");
                 return true;
     
         } catch (SQLException e) {

@@ -123,8 +123,10 @@
         <p>🍜 Items in basket: </p>
         <ul id="basketList"></ul> <!-- list of ordered items -->
         <p id="totalPrice"> </p>  <!-- total price of item in basket -->
-        <form action="orderdetails" method="get">
-            <button id="orderButton" type="submit">ORDER</button>
+        <form action="orderdetails" method="post">
+            <input type="hidden" id="basketItemsData" name="basketItemsData" value=""> <!-- hidden field to get data from basket and transfer to orderdetails -->
+            <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="">
+            <button id="orderButton" type="submit">GO TO ORDER</button>
         </form> 
     </div>
 

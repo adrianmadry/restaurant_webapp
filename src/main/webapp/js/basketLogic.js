@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 name: mealName,
                 price: mealPrice
             });
-
             // Update items in basket displayed to user
             const listItem = document.createElement("li"); //creeate <li> element inside <ul> #basketList (in menu.jsp)
             listItem.textContent = `${mealName} - ${mealPrice.toFixed(2)}`;
@@ -27,19 +26,12 @@ document.addEventListener("DOMContentLoaded", function() {
             // Update total price in basket
             totalPriceInBasket += mealPrice;
             totalPrice.textContent = `Total Price is ${totalPriceInBasket.toFixed(2)} €`;
-
-
-
-
+            // Update the hidden input with basket data
+            document.getElementById("basketItemsData").value = JSON.stringify(basketItems);
+            document.getElementById("basketTotalPrice").value = totalPriceInBasket.toFixed(2);
 
         })
     })
-
-    
-    orderButton.addEventListener('click', function() {
-            ;
-
-        });
 
 });
 
