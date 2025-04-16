@@ -8,6 +8,7 @@ public class Order {
 
     protected int orderId;
     protected int userId;
+    protected Double totalPrice;
     protected String orderDate;
     protected OrderStatus orderStatus;
 
@@ -21,9 +22,10 @@ public class Order {
     }
 
 
-    public Order(int orderId, int userId, String orderDate, OrderStatus orderStatus) {
+    public Order(int orderId, int userId, Double totalPrice, String orderDate, OrderStatus orderStatus) {
         this.orderId = orderId;
         this.userId = userId;
+        this.totalPrice = totalPrice;
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
     }
@@ -39,6 +41,15 @@ public class Order {
     public int getUserId() {
         return userId;
     }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
 
     public void setUserId(int userId) {
         this.userId = userId;
@@ -62,7 +73,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order [orderId=" + orderId + ", userId=" + userId + ", orderDate=" + orderDate + ", orderStatus="
+        return "Order [orderId=" + orderId + ", userId=" + userId + ", totalPrice=" + totalPrice + ", orderDate=" + orderDate + ", orderStatus="
                 + orderStatus + "]";
     }
 

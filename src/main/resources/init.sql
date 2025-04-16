@@ -41,6 +41,7 @@ CREATE TYPE order_status AS ENUM ('pending', 'preparing', 'delivered', 'cancelle
 CREATE TABLE orders(
     order_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL CHECK (total_price > 0),
     order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status order_status NOT NULL DEFAULT 'pending',
     FOREIGN KEY (user_id) REFERENCES users(user_id)

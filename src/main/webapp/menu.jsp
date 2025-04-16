@@ -36,13 +36,22 @@
                     <div class="menu-item">
                         <div class="item-number">${counter.index + 1}</div>
                         <div class="item-details">
-                            <p class="meal-name">${meal.name}</p>
+                            <p class="meal-name">${meal.name}</p> <!-- calls getName() method -->
                             <p class="meal-description">${meal.description}</p>
                         </div>
                         <div class="item-price">${meal.price}</div>
                         <div class="item-image">
                             <img src="" alt="IMG">
                         </div>
+                        <div class="item-quantity">
+                            <label>Qty:</label>
+                            <input type="number"
+                                   id = "itemQuantity"
+                                   value="1"
+                                   min="1"
+                                   max="10">
+                        </div>
+                        <input type="hidden" class="meal-id" name="mealId" value="${meal.mealId}">
                         <button class="orderbutton" id="orderMenuButton">
                             Add to basket</button>
                     </div>
@@ -65,6 +74,15 @@
                         <div class="item-image">
                             <img src="" alt="IMG">
                         </div>
+                        <div class="item-quantity">
+                            <label>Qty:</label>
+                            <input type="number"
+                                   id = "itemQuantity"
+                                   value="1"
+                                   min="1"
+                                   max="10">
+                        </div>
+                        <input type="hidden" class="meal-id" name="mealId" value="${meal.mealId}">
                         <button class="orderbutton" id="orderMenuButton">
                             Add to basket</button>
                     </div>
@@ -87,6 +105,15 @@
                         <div class="item-image">
                             <img src="" alt="IMG">
                         </div>
+                        <div class="item-quantity">
+                            <label>Qty:</label>
+                            <input type="number"
+                                   id = "itemQuantity"
+                                   value="1"
+                                   min="1"
+                                   max="10">
+                        </div>
+                        <input type="hidden" class="meal-id" name="mealId" value="${meal.mealId}">
                         <button class="orderbutton" id="orderMenuButton">
                             Add to basket</button>
                     </div>
@@ -109,6 +136,15 @@
                         <div class="item-image">
                             <img src="" alt="IMG">
                         </div>
+                        <div class="item-quantity">
+                            <label>Qty:</label>
+                            <input type="number"
+                                   id = "itemQuantity"
+                                   value="1"
+                                   min="1"
+                                   max="10">
+                        </div>
+                        <input type="hidden" class="meal-id" name="mealId" value="${meal.mealId}">
                         <button class="orderbutton" id="orderMenuButton">
                             Add to basket</button>
                     </div>

@@ -1,49 +1,37 @@
+<%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 
 <html>
 <head>
-    <!-- <script src="js/orderdetails.js"></script> -->
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/menu.css">
 </head>
 
 <body>
     <h1 style="color:black"> ORDER DETAILS </h1>
     <form action="submitOrder" method="post">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name">
     
         <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required>
+        <input type="text" id="address" name="address">
     
         <label for="phone">Phone:</label>
-        <input type="tel" id="phone" name="phone" required>
+        <input type="tel" id="phone" name="phone">
 
         <label for="userId">User ID</label>
         <input type="text" id="userId" name="userId" required>
 
-        <!-- Hidden field to pass the basket data -->
-        <input type="hidden" id="basketItemsData" name="basketItems" value="">
-        <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="">
+        <!-- Hidden field get basket data from request -->
+        <input type="hidden" id="basketItemsData" name="basketItems" value="<c:out value='${basketItemsData}' escapeXml='true'/>">
+        <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="<c:out value='${basketTotalPrice}'/>">
     
         <button type="submit">Submit Order</button>
     </form>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get request parameters
-            const requestParams = new URLSearchParams(window.location.search);
-
-            const basketItems = requestParams.get("basketItemsData");
-            const basketTotalPrice = requestParams.get("basketTotalPrice");
-
-            document.getElementById("basketItemsData").value = basketItems;
-            document.getElementById("basketTotalPrice").value = basketTotalPrice;
-
-            console.log("JS script executed");
-
-    </script>
+    
     
 </body>
-
-
 
 </html>
