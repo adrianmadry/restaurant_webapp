@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // script that add meal to basket when user clicks on "add to basket" button
     addToBasketButtons.forEach(button => {
         button.addEventListener("click", function() {
-            console.log("Button clicked");
             // Get parent "menu-item" div section
             const menuItem = this.closest(".menu-item");
             // Get meal details
