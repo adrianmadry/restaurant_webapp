@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -24,6 +25,7 @@
 
     <div class="form-container">
         <form class="form" action="submitOrder" method="post">
+            <!-- Personal details Section -->
             <div class="form-section">
                 <h2>Personal details</h2>
                 <label for="name">Name:</label>
@@ -42,24 +44,68 @@
                 <input type="text" id="userId" name="userId" required>
             </div>
 
-            <div class="form-section">
+            <!-- Order Details section -->
+            <div class="form-section" id="formOrderDetails">
                 <h2>Order Details</h2>
-                <label for="arrivalDate">Arrival date</label>
-                <input type="date" id="arrivalDate" name="arrivalDate" required>
+                <div>
+                    <label for="arrivalDate">Arrival date</label>
+                    <input type="date" id="arrivalDate" name="arrivalDate" required>
+                </div>
 
-                <label for="arrivalTime">Arrival/Pickup time</label>
-                <select id="arrivalTime" name="arrivalTime" required>
+                <div>
+                    <label for="arrivalTime">Arrival/Pickup time</label>
+                    <select id="arrivalTime" name="arrivalTime" required></select>
+                </div>
 
-                </select>
-    
-                <label>
-                    <input type="radio" name="deliveryOption" value="delivery" required>
-                    Food delivery
-                </label>
-                <label>
-                    <input type="radio" name="deliveryOption" value="pickup" required>
-                    Self Pickup
-                </label>
+                <div>
+                    <label>
+                        <input type="radio" name="deliveryOption" value="delivery" required>
+                        Food delivery
+                    </label>
+                    <label>
+                        <input type="radio" name="deliveryOption" value="pickup" required>
+                        Self Pickup
+                    </label>
+                </div>
+                
+                <!-- Basket Item display -->
+                <div id="basketSection">
+                    <h3>Your order final status</h3>
+                    <div class="basketItems">
+                        <c:if test="${not empty basketItemsData}">
+                            <table class="basket-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="basketItemsTableBody">
+                                   
+                                </tbody>
+                            </table>
+
+                            <div class="basket-summary">
+                                <div class="price-row">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal">€ ${basketTotalPrice}</span>
+                                </div>
+                                <div class="price-row">
+                                    <span>Delivery Fee:</span>
+                                    <span id="deliveryFee">€ 0.00</span>
+                                </div>
+                                <div class="price-row total">
+                                    <span>Total payment:</span>
+                                    <span id="totalPrice">€ ${basketTotalPrice}</span>
+                                </div>
+                            </div>
+                        </c:if>
+                    </div>
+                    
+                </div>
+
+                <!-- Submit order button -->
                 <button type="submit" class="submit-button">Submit Order</button>
             </div>
 

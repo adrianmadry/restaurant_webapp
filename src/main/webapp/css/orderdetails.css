@@ -31,6 +31,12 @@ body {
   padding: 20px;
 }
 
+#formOrderDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .form-section h2 {
   color: #974527;
   border-bottom: 2px solid  #974527;
@@ -72,6 +78,54 @@ label {
 
 .submit-button:hover {
   background-color: #974527;
+}
+
+/* Basket Item Display */
+.basketItems {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.basket-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.basket-table th {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 2px solid #974527;
+  color: #974527;
+  font-weight: 600;
+}
+
+.basket-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.basket-summary {
+  margin-top: 15px;
+  border-top: 2px solid #974527;
+  padding-top: 15px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.price-row.total {
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 12px;
+  color: #974527;
 }
 
 @media (max-width: 768px) {
