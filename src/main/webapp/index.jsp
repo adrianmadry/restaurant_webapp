@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant App</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="js/loginModal.js"></script>
 </head>
 
 
@@ -22,11 +23,12 @@
                 <a href="">Contact</a>
             </div>
             <div class="loginbar">
-                <a href="">Log In</a>
+                <a href="javascript:void(0);" onclick="openModal()">Log In</a>
             </div>
             
     </div>
 
+    
     <!-- Welcoming block -->
     <div class="welcome">
         <h1> Welcome to Our Restaurant</h1> 
@@ -36,6 +38,24 @@
         </form>
     </div>
    
+    <!-- Modal for login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+            
+                <button class="login-button" type="submit">Log In</button>
+            </div>
+        </div>
+    </div>
 
     
 </body>

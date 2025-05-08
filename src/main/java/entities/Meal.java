@@ -14,7 +14,7 @@ public class Meal {
     }
 
     public Meal(String name, String type, String description, Double price) {
-        this.name = name;
+        this.name = capitalizeEachWord(name);
         this.type = type;
         this.description = description;
         this.price = price;
@@ -22,7 +22,7 @@ public class Meal {
 
     public Meal(int mealId, String name, String type, String description, Double price) {
         this.mealId = mealId;
-        this.name = name;
+        this.name = capitalizeEachWord(name);
         this.type = type;
         this.description = description;
         this.price = price;
@@ -41,7 +41,7 @@ public class Meal {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = capitalizeEachWord(name);
     }
 
     public String getType() {
@@ -72,6 +72,27 @@ public class Meal {
     public String toString() {
         return "Meal [mealId=" + mealId + ", name=" + name + ", type=" + type + ", description=" + description
                 + ", price=" + price + "]";
+    }
+
+    /*
+    Function returns String with capitalized first letters of each word. 
+    Rest of letters are lowercase.
+    */
+    private static String capitalizeEachWord(String text) {
+        String[] words = text.split("\\s+");
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            String firstLetter = words[i].substring(0, 1).toUpperCase();
+            String restOfWord = words[i].substring(1).toLowerCase();
+            result.append(firstLetter).append(restOfWord);
+
+            // Insert space between words in String
+            if (i < words.length - 1) {
+                result.append(" ");
+            }
+        }
+
+        return result.toString();
     }
 
 
