@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant App</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/loginModal.css">
     <script src="js/loginModal.js"></script>
 </head>
 
@@ -51,8 +52,10 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" placeholder="Enter your password" required>
                 </div>
-            
-                <button class="login-button" type="submit">Log In</button>
+                <div class="login-status">
+                    <h4 id="loginStatus"></h4>
+                </div>
+                <button class="login-button" id="loginButton" type="submit">Log In</button>
             </div>
         </div>
     </div>

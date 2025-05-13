@@ -147,4 +147,26 @@ public class UserDAO {
         }
         return false;
     }
+
+    public boolean authenticate(String email, String password) {
+        String sql = "SELECT 1 FROM users WHERE email = ? AND password = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, email);
+                stmt.setString(2, password);
+                ResultSet resultSet = stmt.executeQuery();
+                return resultSet.next();
+        
+        } catch (SQLException e) {
+            System.err.println("Error authenticate user: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        UserDAO userDao = new UserDAO();
+        System.out.println(userDao.authenticate("adr@gma6il.com", "passy"));
+        System.out.println(userDao.authenticate("julko@gmail.com", "haslo"));
+    }
+
 }
