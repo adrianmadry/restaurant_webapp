@@ -2,6 +2,19 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<%@ page session="true" %>
+<%
+    String userEmail = (String) session.getAttribute("userEmail");
+    Integer userId = (Integer) session.getAttribute("userId");
+    String userName = (String) session.getAttribute("userName");
+    System.out.println("userEmail from session: " + userEmail);
+    System.out.println("userId from session: " + userId);
+    System.out.println("userName from session: " + userName);
+    if (userEmail == null) {
+        response.sendRedirect("index.jsp"); // Not logged in, go back to login
+    }
+%>
+
 <!DOCTYPE html>
 
 <html>
@@ -20,7 +33,9 @@
         <a href="index.jsp">Home</a>     
         <a href="">Contact</a>
         <div class="loginbar">
-            <a href="">Log In</a>
+            <a id="loginButtonTopBar" href="javascript:void(0);" onclick="openModal()">
+                <%= (userName != null) ? userName + "✅" : "Log In" %> 
+            </a>
         </div>
     </div>
 

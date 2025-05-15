@@ -74,6 +74,36 @@ public class UserDAO {
         return null;
     }
 
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, email);
+                
+                try (ResultSet resultSet = stmt.executeQuery()) {
+                    // iterate through data retrieved from DB
+                    if (resultSet.next()) { 
+                        Integer userId = resultSet.getInt("user_id");
+                        String username = resultSet.getString("username");
+                        String password = resultSet.getString("password");
+                        //Convert String to RoleType enum
+                        String roleString = resultSet.getString("role");
+                        RoleType roleType = User.RoleType.valueOf(roleString.toUpperCase());
+
+                        String registrationDate = resultSet.getString("registration_date");
+    
+                        return new User(userId, username, password, email, roleType, registrationDate);  
+                    }
+                }
+                     
+        } catch (SQLException e) {
+            System.err.println("Error retrieving user:  " + e.getMessage());
+        }
+        return null;
+
+    }
+
      // READ - Get all users
      public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
@@ -165,8 +195,10 @@ public class UserDAO {
 
     public static void main(String[] args) {
         UserDAO userDao = new UserDAO();
-        System.out.println(userDao.authenticate("adr@gma6il.com", "passy"));
-        System.out.println(userDao.authenticate("julko@gmail.com", "haslo"));
+        User user = userDao.getUserByEmail("astro.com");
+        System.out.println(user);
+
+        
     }
 
 }

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import dao.UserDAO;
+import entities.User;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {
@@ -46,6 +48,16 @@ public class LoginServlet extends HttpServlet {
         System.out.println("User exist in db: " + legitUserCredentials);
 
         if (legitUserCredentials) {
+            // Get the User object
+            User user = userDao.getUserByEmail(email);
+            
+            // Start new session if user type proper credentials
+            HttpSession session = request.getSession();
+            session.setAttribute("userEmail", email);
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userName", user.getUsername());
+            
+            response.getWriter().write("{\"username\": \"" + user.getUsername() + "\"}");
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

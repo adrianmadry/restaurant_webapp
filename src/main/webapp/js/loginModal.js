@@ -1,4 +1,5 @@
 let loginStatusField;
+let loginButtonTopBar;
 
 // Function to open and close the login modal
 function openModal() {
@@ -22,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const logInButton = document.getElementById("loginButton");
     loginStatusField = document.getElementById("loginStatus");
+    loginButtonTopBar = document.getElementById("loginButtonTopBar");
 
     logInButton.addEventListener("click", function() {
         const email = document.getElementById("email").value;
@@ -47,9 +49,17 @@ function loginUser(email, password) {
     })
     .then(response => {
         if (response.ok) {
-            console.log("Login successful!");
-            loginStatusField.textContent = "Login successful!";
-            loginStatusField.style.color = "green";
+            response.json().then(data => {
+                console.log("Login successful!");
+                loginStatusField.textContent = "Login successful!";
+                loginStatusField.style.color = "green";
+                // Change login status at top bar
+                loginButtonTopBar.textContent = data.username + "✅";
+                // Close Log In modal
+                setTimeout(() => {closeModal();}, 1500);
+            })
+
+
         } else {
             console.log("Login failed!");
             loginStatusField.textContent = "Login failed!";

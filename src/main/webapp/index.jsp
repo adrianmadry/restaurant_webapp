@@ -1,3 +1,5 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +26,7 @@
                 <a href="">Contact</a>
             </div>
             <div class="loginbar">
-                <a href="javascript:void(0);" onclick="openModal()">Log In</a>
+                <a id="loginButtonTopBar" href="javascript:void(0);" onclick="openModal()">Log In</a>
             </div>
             
     </div>
