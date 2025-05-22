@@ -26,7 +26,9 @@
                 <a href="">Contact</a>
             </div>
             <div class="loginbar">
-                <a id="loginButtonTopBar" href="javascript:void(0);" onclick="openModal()">Log In</a>
+                <a id="loginButtonTopBar" href="javascript:void(0);">Log In</a>
+                <span id="userStatusTopBar" class="hidden"></span>
+                <a id="logoutButtonTopBar" class="hidden" href="javascript:void(0);" onclick="logoutUser()">Log Out</a>     
             </div>
             
     </div>

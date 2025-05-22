@@ -2,40 +2,30 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%@ page session="true" %>
-<%
-    String userEmail = (String) session.getAttribute("userEmail");
-    Integer userId = (Integer) session.getAttribute("userId");
-    String userName = (String) session.getAttribute("userName");
-    System.out.println("userEmail from session: " + userEmail);
-    System.out.println("userId from session: " + userId);
-    System.out.println("userName from session: " + userName);
-    if (userEmail == null) {
-        response.sendRedirect("index.jsp"); // Not logged in, go back to login
-    }
-%>
-
 <!DOCTYPE html>
 
 <html>
 <head>
+    <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/menu.css">
     <link rel="stylesheet" type="text/css" href="css/basket.css">
+    <link rel="stylesheet" type="text/css" href="css/loginModal.css">
     <script src="js/basketLogic.js?v=${timestamp}"></script>
-    <meta charset="UTF-8">
+    <script src="js/loginModal.js"></script>
+   
 </head>
 
 <body class="bgimage">
-
+    
     <!-- Navigation bar -->
     <div class="topbar">
-        <a href="index.jsp">Home</a>     
+        <a href="index.jsp">Home</a>
         <a href="">Contact</a>
         <div class="loginbar">
-            <a id="loginButtonTopBar" href="javascript:void(0);" onclick="openModal()">
-                <%= (userName != null) ? userName + "✅" : "Log In" %> 
-            </a>
+            <a id="loginButtonTopBar" href="javascript:void(0);">Log In</a>
+            <span id="userStatusTopBar" class="hidden"></span>
+            <a id="logoutButtonTopBar" class="hidden" href="javascript:void(0);" onclick="logoutUser()">Log Out</a>   
         </div>
     </div>
 
@@ -179,6 +169,27 @@
             <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="">
             <button id="orderButton" type="submit">GO TO ORDER</button>
         </form> 
+    </div>
+
+    <!-- Modal for login -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <div class="login-status">
+                    <h4 id="loginStatus"></h4>
+                </div>
+                <button class="login-button" id="loginButton" type="submit">Log In</button>
+            </div>
+        </div>
     </div>
 
     

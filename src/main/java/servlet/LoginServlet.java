@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import dao.UserDAO;
 import entities.User;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +39,7 @@ public class LoginServlet extends HttpServlet {
         JsonObject json = gson.fromJson(requestBody, JsonObject.class);
         String email = json.get("email").getAsString();
         String password = json.get("password").getAsString();
-        System.out.println("Data provided bu user " + email + ":" + password );
+        System.out.println("Data provided by user " + email + ":" + password );
 
         // Check credentials provided by user in database
         UserDAO userDao = new UserDAO();
@@ -48,7 +47,6 @@ public class LoginServlet extends HttpServlet {
         System.out.println("User exist in db: " + legitUserCredentials);
 
         if (legitUserCredentials) {
-            // Get the User object
             User user = userDao.getUserByEmail(email);
             
             // Start new session if user type proper credentials
@@ -56,11 +54,13 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("userEmail", email);
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userName", user.getUsername());
-            
-            response.getWriter().write("{\"username\": \"" + user.getUsername() + "\"}");
+
             response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("{\"username\": \"" + user.getUsername() + "\"}");
+            
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"Invalid credentials.\"}");
         }
         
 

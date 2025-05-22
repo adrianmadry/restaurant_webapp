@@ -193,12 +193,4 @@ public class UserDAO {
         return false;
     }
 
-    public static void main(String[] args) {
-        UserDAO userDao = new UserDAO();
-        User user = userDao.getUserByEmail("astro.com");
-        System.out.println(user);
-
-        
-    }
-
 }

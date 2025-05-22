@@ -1,5 +1,27 @@
 let loginStatusField;
 let loginButtonTopBar;
+let logoutButtonTopBar;
+let userStatusTopBar;
+
+document.addEventListener("DOMContentLoaded", function() {
+    const logInButton = document.getElementById("loginButton");
+    loginStatusField = document.getElementById("loginStatus");
+    loginButtonTopBar = document.getElementById("loginButtonTopBar");
+    logoutButtonTopBar = document.getElementById("logoutButtonTopBar");
+    userStatusTopBar = document.getElementById("userStatusTopBar");
+
+    checkSessionStatus();
+    
+    loginButtonTopBar.addEventListener("click", function() {
+        openModal();
+    })
+
+    logInButton.addEventListener("click", function() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        loginUser(email, password);        
+    })   
+})
 
 // Function to open and close the login modal
 function openModal() {
@@ -17,24 +39,19 @@ window.onclick = function(event) {
     }
 }
 
+function updateTopBarAfterLogin(username) {
+    loginButtonTopBar.classList.add("hidden");
+    userStatusTopBar.textContent = username + "✅";
+    userStatusTopBar.classList.remove("hidden");
+    logoutButtonTopBar.classList.remove("hidden"); // Display Logout button
+}
 
-
-document.addEventListener("DOMContentLoaded", function() {
-
-    const logInButton = document.getElementById("loginButton");
-    loginStatusField = document.getElementById("loginStatus");
-    loginButtonTopBar = document.getElementById("loginButtonTopBar");
-
-    logInButton.addEventListener("click", function() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        loginUser(email, password);        
-    })
-    
-})
-
-
-// Function to authenticate users login credentials
+function updateTopBarAfterLogout() {
+    loginButtonTopBar.classList.remove("hidden");
+    loginButtonTopBar.onclick = openModal; 
+    userStatusTopBar.classList.add("hidden");
+    logoutButtonTopBar.classList.add("hidden");   
+}
 function loginUser(email, password) {
     // Send credentials to backend
     fetch('api/login', {
@@ -53,13 +70,10 @@ function loginUser(email, password) {
                 console.log("Login successful!");
                 loginStatusField.textContent = "Login successful!";
                 loginStatusField.style.color = "green";
-                // Change login status at top bar
-                loginButtonTopBar.textContent = data.username + "✅";
+                updateTopBarAfterLogin(data.username);
                 // Close Log In modal
                 setTimeout(() => {closeModal();}, 1500);
             })
-
-
         } else {
             console.log("Login failed!");
             loginStatusField.textContent = "Login failed!";
@@ -70,6 +84,54 @@ function loginUser(email, password) {
         console.error("Error:", error);
     });
 }
+
+function logoutUser() {
+    fetch('userlogout', {method: 'POST'})
+    .then(response => {
+        if (response.ok) {
+            console.log("Logout successful");
+            
+            // Change login status at top bar
+            updateTopBarAfterLogout();
+
+        } else {
+            console.error("Logout Failed")
+        }
+    })
+}
+
+function checkSessionStatus() {
+    fetch('api/session/status', {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+    .then (response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Unvalid network response");
+        } 
+    })
+    .then(data => {
+        if (data.isLoggedIn) {
+            updateTopBarAfterLogin(data.userName);
+        } else {
+            updateTopBarAfterLogout();
+        }
+    })
+    .catch(error => {
+        console.error('Error checking session status:', error);
+        updateTopBarAfterLogout();
+    })
+}
+
+
+
+
+
+
+
+
 
   
     

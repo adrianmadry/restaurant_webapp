@@ -32,12 +32,36 @@
     color:whitesmoke;
     margin-left: 50px;
     font-weight:500;
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;   
+}
+
+.topbar span {
+    text-decoration: none;
+    color:whitesmoke;
+    margin-left: 50px;
+    font-weight:500;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;   
 }
 
 .loginbar {
     margin-right: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#logoutButtonTopBar {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #e79822; /* red */
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    margin-left: 10px; /* spacing from the login label */
 }
 
 .welcome {
