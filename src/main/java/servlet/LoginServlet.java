@@ -62,7 +62,5 @@ public class LoginServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("{\"error\": \"Invalid credentials.\"}");
         }
-        
-
     }
 }
