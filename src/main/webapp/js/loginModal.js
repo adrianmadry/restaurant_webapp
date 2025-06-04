@@ -4,24 +4,45 @@ let logoutButtonTopBar;
 let userStatusTopBar;
 
 document.addEventListener("DOMContentLoaded", function() {
-    const logInButton = document.getElementById("loginButton");
+    const logInButtonInModal = document.getElementById("loginButton");
     loginStatusField = document.getElementById("loginStatus");
     loginButtonTopBar = document.getElementById("loginButtonTopBar");
     logoutButtonTopBar = document.getElementById("logoutButtonTopBar");
     userStatusTopBar = document.getElementById("userStatusTopBar");
 
+    // Check URL params for eror messages
+    checkURLforErrParams();
+
+    // Check if user is logged in
     checkSessionStatus();
     
     loginButtonTopBar.addEventListener("click", function() {
         openModal();
     })
 
-    logInButton.addEventListener("click", function() {
+    logInButtonInModal.addEventListener("click", function() {
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         loginUser(email, password);        
     })   
 })
+
+// Close modal when user clicks outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById("loginModal");
+    if(event.target == modal) {
+        closeModal();
+    }
+}
+
+// Function to check URL params and handle errors
+function checkURLforErrParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.get('error') == 'notLoggedIn') {
+        openModal();
+    }
+}
 
 // Function to open and close the login modal
 function openModal() {
@@ -31,13 +52,7 @@ function closeModal() {
     document.getElementById("loginModal").style.display = "none";
 }
 
-// Close modal when user clicks outside of it
-window.onclick = function(event) {
-    const modal = document.getElementById("loginModal");
-    if(event.target == modal) {
-        closeModal();
-    }
-}
+
 
 function updateTopBarAfterLogin(username) {
     loginButtonTopBar.classList.add("hidden");

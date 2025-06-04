@@ -43,9 +43,6 @@
             
                 <label for="phone">Phone:</label>
                 <input type="tel" id="phone" name="phone">
-
-                <label for="userId">User ID</label>
-                <input type="text" id="userId" name="userId" required>
             </div>
 
             <!-- Order Details section -->
