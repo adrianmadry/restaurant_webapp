@@ -2,6 +2,28 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+
+<%-- 
+    Retrieve basket data for the order form.
+    1. If the user previously attempted to submit an order without being logged in,
+       restore the basket data from session attributes ("pendingbasketitems" and "pendingbasketprice").
+    2. Otherwise, get the basket data from the current request parameters (normal order flow).
+    This ensures the user's basket is preserved across login attempts. --%>
+<%
+    String basketItemsData = "";
+    String basketTotalPrice = "";
+    
+    // Restore basket data from session if present (user not logged in previously)
+    if (session.getAttribute("pendingbasketitems") != null) {
+        basketItemsData = (String) session.getAttribute("pendingbasketitems");
+        basketTotalPrice = (String) session.getAttribute("pendingbasketprice");
+    } else {
+        // Get order data from request parameters (user logged in previously)
+        basketItemsData = request.getParameter("basketItemsData") != null ? request.getParameter("basketItemsData") : "";
+        basketTotalPrice = request.getParameter("basketTotalPrice") != null ? request.getParameter("basketTotalPrice") : "";
+    }
+%>
+
 <!DOCTYPE html>
 
 <html>
@@ -73,7 +95,6 @@
                 <div id="basketSection">
                     <h3>Your order final status</h3>
                     <div class="basketItems">
-                        <c:if test="${not empty basketItemsData}">
                             <table class="basket-table">
                                 <thead>
                                     <tr>
@@ -83,14 +104,14 @@
                                     </tr>
                                 </thead>
                                 <tbody id="basketItemsTableBody">
-                                   
+                                   <!-- Basket items data displayed by JS script -->
                                 </tbody>
                             </table>
 
                             <div class="basket-summary">
                                 <div class="price-row">
                                     <span>Subtotal:</span>
-                                    <span id="subtotal">€ ${basketTotalPrice}</span>
+                                    <span id="subtotal">€ <%= basketTotalPrice %></span>
                                 </div>
                                 <div class="price-row">
                                     <span>Delivery Fee:</span>
@@ -98,22 +119,21 @@
                                 </div>
                                 <div class="price-row total">
                                     <span>Total payment:</span>
-                                    <span id="totalPrice">€ ${basketTotalPrice}</span>
+                                    <span id="totalPrice">€ <%= basketTotalPrice %></span>
                                 </div>
                             </div>
-                        </c:if>
                     </div>
                     
                 </div>
 
                 <!-- Submit order button -->
-                <button type="submit" class="submit-button">Submit Order</button>
+                <button type="submit" class="submit-button" id="submitButton">Submit Order</button>
             </div>
 
 
             <!-- Hidden field get basket data from request -->
-            <input type="hidden" id="basketItemsData" name="basketItems" value="<c:out value='${basketItemsData}' escapeXml='true'/>">
-            <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="<c:out value='${basketTotalPrice}'/>">
+            <input type="hidden" id="basketItemsData" name="basketItems" value="<%= basketItemsData.replace("\"", "&quot;") %>" />
+            <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="<%= basketTotalPrice %>" />
         
             
         </form>

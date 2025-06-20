@@ -23,7 +23,7 @@ let deliveryFee = 5.00;
 let deliveryFeeAdded = false;
 const currentDateTime = new Date();
 const currentDateTimeRounded = currentDateTime.roundTimeToNext30Min();
-const todayString = getTodayDateString(); 
+const todayString = getTodayDateString();
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const timeSelectField = document.getElementById("arrivalTime"); 
     const dateSelectField = document.getElementById("arrivalDate");
     const deliveryOptionsFields = document.querySelectorAll('input[name="deliveryOption"]');
+    const submitOrderButton = document.getElementById("submitButton");
+    // Get order data from order basket
+    const basketItemsData = document.getElementById("basketItemsData").value;
+    const basketTotalPrice = document.getElementById("basketTotalPrice").value;
 
     // Set today's date as default displayed arrival date after page loading
     dateSelectField.value = todayString;
@@ -46,13 +50,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate basket items data and order summary
     populateBasketItems();
 
-    // Event listner for all delivery options fields
+    // Event listener for all delivery options fields
     deliveryOptionsFields.forEach(function(radio) {
         radio.addEventListener('change', function() {
             calculateDeliveryFee();
         })
     })
-    
+
+    /*
+    Event listener for "Submit Order" button.
+    Function blocks sending order to database if basket is empty 
+    */
+    submitOrderButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        if (basketItemsData.trim().length == 0 && basketTotalPrice.trim().length == 0) {
+            console.warn("User tried to submit empty order!");
+            //TODO - display message to user
+            return;
+        }
+        this.form.submit(); // submit order if basket not empty
+    })
 })
 
 // Function to get today's date and return as string in format "YYYY-MM-DD" 
@@ -100,13 +117,29 @@ function populateArrivalTimeList(selectedDate, timeSelectField) {
     } 
 }
 
-// Function to populate basket items and display and display as table on site 
+// Function to populate basket items and display as table on site 
 function populateBasketItems() {
-    // Get HTML elements form site
+    // Get HTML elements from site
     const basketItemsJSON = document.getElementById("basketItemsData").value;
-    const basketItems = JSON.parse(basketItemsJSON);
     const tableBody = document.getElementById("basketItemsTableBody");
-    
+
+    // Check for empty value (no data in basket)
+    if (!basketItemsJSON || basketItemsJSON.trim() == '') {
+        console.warn("No basket items data found");
+        return;
+    }
+
+    // Transform JSON string to JS array
+    let basketItems;
+    try {
+        basketItems = JSON.parse(basketItemsJSON);
+    } catch (error) {
+        console.error("Invalid JSON data: ", error);
+        console.log("Raw data: ", basketItemsJSON);
+        return;
+    }
+
+    // Display basket items in table on orderdetails.jsp
     basketItems.forEach(item => {
         const row = document.createElement("tr");
         row.innerHTML = `

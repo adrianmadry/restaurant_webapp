@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import java.util.logging.Logger;
 
 import dao.UserDAO;
 import entities.User;
@@ -17,7 +18,10 @@ import javax.servlet.http.HttpSession;
 
 @WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
     private final Gson gson = new Gson();
+    private final UserDAO userDao = new UserDAO();
+    boolean hasPendingOrder = false;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Set response content type 
@@ -42,11 +46,10 @@ public class LoginServlet extends HttpServlet {
         System.out.println("Data provided by user " + email + ":" + password );
 
         // Check credentials provided by user in database
-        UserDAO userDao = new UserDAO();
         boolean legitUserCredentials = userDao.authenticate(email, password);
-        System.out.println("User exist in db: " + legitUserCredentials);
 
         if (legitUserCredentials) {
+            LOGGER.info("User exist in db: " + legitUserCredentials);
             User user = userDao.getUserByEmail(email);
             
             // Start new session if user type proper credentials
@@ -55,8 +58,23 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userName", user.getUsername());
 
+            /* Check for pending order data and restore it
+            (Case when user complete order in basket before log In)*/
+            if (session.getAttribute("pendingbasketitems") != null) {
+                hasPendingOrder = true;
+                System.out.println("User has pending order");
+            }
+
+            // Return succes response with info about pending order
+            JsonObject responseJson = new JsonObject();
+            responseJson.addProperty("username", user.getUsername());
+            responseJson.addProperty("hasPendingOrder", hasPendingOrder);
+            if (hasPendingOrder) {
+                responseJson.addProperty("redirectUrl", "orderdetails.jsp");
+            }
+
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("{\"username\": \"" + user.getUsername() + "\"}");
+            response.getWriter().write(responseJson.toString());
             
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
