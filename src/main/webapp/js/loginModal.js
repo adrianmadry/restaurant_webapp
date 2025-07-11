@@ -67,6 +67,7 @@ function updateTopBarAfterLogout() {
     userStatusTopBar.classList.add("hidden");
     logoutButtonTopBar.classList.add("hidden");   
 }
+
 function loginUser(email, password) {
     // Send credentials to backend
     fetch('api/login', {

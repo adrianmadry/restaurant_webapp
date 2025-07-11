@@ -50,21 +50,27 @@
     </div>
 
     <div class="form-container">
-        <form class="form" action="submitOrder" method="post">
+        <form class="form" id="orderForm">
             <!-- Personal details Section -->
             <div class="form-section">
                 <h2>Personal details</h2>
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name">
-            
-                <label for="address">Street:</label>
-                <input type="text" id="street" name="street">
 
                 <label for="address">City:</label>
                 <input type="text" id="city" name="city">
             
+                <label for="address">Street:</label>
+                <input type="text" id="street" name="street">
+
+                <label for="houseNumber">House/Apartment Number:</label>
+                <input type="text" id="houseNumber" name="houseNumber">
+            
                 <label for="phone">Phone:</label>
                 <input type="tel" id="phone" name="phone">
+
+                <label for="orderNotes">Order Notes:</label>
+                <textarea id="orderNotes" name="orderNotes"></textarea>
             </div>
 
             <!-- Order Details section -->
@@ -134,7 +140,7 @@
             <!-- Hidden field get basket data from request -->
             <input type="hidden" id="basketItemsData" name="basketItems" value="<%= basketItemsData.replace("\"", "&quot;") %>" />
             <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="<%= basketTotalPrice %>" />
-        
+            
             
         </form>
     </div>
@@ -159,9 +165,7 @@
             </div>
         </div>
     </div>
-    
-    
-    
+     
 </body>
 
 </html>

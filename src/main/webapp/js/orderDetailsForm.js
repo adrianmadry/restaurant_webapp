@@ -20,7 +20,6 @@ Date.prototype.roundTimeToNext30Min = function() {
 
 // Set global variables for Delivery Fee
 let deliveryFee = 5.00;
-let deliveryFeeAdded = false;
 const currentDateTime = new Date();
 const currentDateTimeRounded = currentDateTime.roundTimeToNext30Min();
 const todayString = getTodayDateString();
@@ -28,6 +27,7 @@ const todayString = getTodayDateString();
 
 document.addEventListener('DOMContentLoaded', function() {
     // Get field from HTML form
+    const orderForm = document.getElementById("orderForm");
     const timeSelectField = document.getElementById("arrivalTime"); 
     const dateSelectField = document.getElementById("arrivalDate");
     const deliveryOptionsFields = document.querySelectorAll('input[name="deliveryOption"]');
@@ -62,14 +62,38 @@ document.addEventListener('DOMContentLoaded', function() {
     Function blocks sending order to database if basket is empty 
     */
     submitOrderButton.addEventListener("click", function(event) {
-        event.preventDefault();
         if (basketItemsData.trim().length == 0 && basketTotalPrice.trim().length == 0) {
             console.warn("User tried to submit empty order!");
             //TODO - display message to user
             return;
         }
-        this.form.submit(); // submit order if basket not empty
     })
+
+    /*
+    Event listener for submit order
+    */
+    orderForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Collect order data
+        const formData = new FormData(this);
+        const orderData = {
+            basketItems: JSON.parse(basketItemsData),
+            basketTotalPrice: basketTotalPrice,
+            name: formData.get('name'),
+            city: formData.get('city'),
+            street: formData.get('street'),
+            houseNumber: formData.get('houseNumber'),
+            phone: formData.get('phone'),
+            orderNotes: formData.get('orderNotes'),
+            arrivalDate: formData.get('arrivalDate'),
+            arrivalTime: formData.get('arrivalTime'),
+            deliveryOption: formData.get('deliveryOption')  
+        };
+
+        // Send submit order post request
+        submitOrder(orderData);
+    })
+
 })
 
 // Function to get today's date and return as string in format "YYYY-MM-DD" 
@@ -153,25 +177,61 @@ function populateBasketItems() {
 
 // Function to calculate delivery fee based on user choice (delivery or self-pickup)
 function calculateDeliveryFee() {
-    // Get HTML elements form site
-    const deliveryOptionField = document.querySelector('input[name="deliveryOption"]:checked').value;
+    // Get HTML elements
+    const deliveryOption = document.querySelector('input[name="deliveryOption"]:checked').value;
+    const subTotalPayment = document.getElementById("basketTotalPrice").value;
     const deliveryFeeField = document.getElementById("deliveryFee");
     const totalPaymentField = document.getElementById("totalPrice");
-    const finalBasketPrice = document.getElementById("basketTotalPrice"); // get hidden from which from backend order is updated
 
-    if (deliveryOptionField == "delivery" && deliveryFeeAdded == false) {
-        // Increase total payement fields by delivery fee
-        let finalPayment = parseFloat(finalBasketPrice.value) + deliveryFee;
-        finalBasketPrice.value = finalPayment;
-        deliveryFeeField.textContent = `€ ${deliveryFee}`;
-        totalPaymentField.textContent = `€ ${finalPayment}`;
-        deliveryFeeAdded = true; // update flag to prevent from double increase price 
-    } else if (deliveryOptionField == "pickup" && deliveryFeeAdded == true) {
-        // Descrease total payement fields by delivery fee
-        finalBasketPrice.value -= deliveryFee;
-        deliveryFeeField.textContent = `€ 0.00`;
-        totalPaymentField.textContent = `€ ${finalBasketPrice.value}`;
-        deliveryFeeAdded = false; // update flag to prevent from double decrease price 
-    }        
+    // Determine if delivery fee should be applied
+    const isDelivery = deliveryOption == "delivery";
+    const feeToApply = isDelivery ? deliveryFee : 0.00;
+    const finalPayment = parseFloat(subTotalPayment) + feeToApply;
+
+    // Update displayed fields
+    deliveryFeeField.textContent = `€ ${feeToApply}`;
+    totalPaymentField.textContent = `€ ${finalPayment.toFixed(2)}`; 
+}
+
+function submitOrder(orderData) {
+    // Send credentials to backend
+    fetch('submitOrder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => {
+        return response.json().then(data => {
+            return {
+                status: response.status,
+                ok: response.ok,
+                data: data
+            };
+        });
+    })
+    .then(result => {
+        if (result.ok) {
+            // Handle succes response
+            if (result.data.success) {
+                window.location.href = result.data.redirectUrl;
+            }
+        } else {
+            // Handle error responses
+            if (result.status == 401) {
+                // Authentication error - redirect user to login
+                if (result.data.requiresAuth) {
+                    window.location.href = window.location.href = result.data.redirectUrl;
+                }
+            } else {
+                // Handle other errors
+                throw new Error(result.data.error || result.data.message || 'Server error');
+            }
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
 }
 
