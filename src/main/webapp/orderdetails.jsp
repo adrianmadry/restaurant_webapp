@@ -32,8 +32,8 @@
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/orderdetails.css">
     <link rel="stylesheet" type="text/css" href="css/loginModal.css">
-    <script src="js/orderDetailsForm.js?v=${timestamp}"></script>
-    <script src="js/loginModal.js"></script>
+    <script type="module" src="js/orderdetails/orderFormInit.js?v=${timestamp}"></script>
+    <script type="module" src="js/login/loginInit.js?v=${timestamp}"></script>
 </head>
 
 <body class="bgimage">
@@ -45,32 +45,46 @@
         <div class="loginbar">
             <a id="loginButtonTopBar" href="javascript:void(0);">Log In</a>
             <span id="userStatusTopBar" class="hidden"></span>
-            <a id="logoutButtonTopBar" class="hidden" href="javascript:void(0);" onclick="logoutUser()">Log Out</a>   
+            <a id="logoutButtonTopBar" class="hidden" href="javascript:void(0);">Log Out</a>   
         </div>
     </div>
 
     <div class="form-container">
-        <form class="form" id="orderForm">
+        <form class="form" id="orderForm" novalidate>
             <!-- Personal details Section -->
             <div class="form-section">
                 <h2>Personal details</h2>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name">
+                
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">City:</label>
+                    <input type="text" id="city" name="city" required>                    
+                </div>
 
-                <label for="address">City:</label>
-                <input type="text" id="city" name="city">
-            
-                <label for="address">Street:</label>
-                <input type="text" id="street" name="street">
+                <div class="form-group">
+                    <label for="address">Street:</label>
+                    <input type="text" id="street" name="street">                  
+                </div>
 
-                <label for="houseNumber">House/Apartment Number:</label>
-                <input type="text" id="houseNumber" name="houseNumber">
-            
-                <label for="phone">Phone:</label>
-                <input type="tel" id="phone" name="phone">
+                <div class="form-group">
+                    <label for="houseNumber">House/Apartment Number:</label>
+                    <input type="text" id="houseNumber" name="houseNumber" required>
+                </div>
 
-                <label for="orderNotes">Order Notes:</label>
-                <textarea id="orderNotes" name="orderNotes"></textarea>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone" required>                    
+                </div>
+
+                <div class="form-group">
+                    <label for="orderNotes">Order Notes:</label>
+                    <textarea id="orderNotes" name="orderNotes"></textarea>
+                </div>
+
             </div>
 
             <!-- Order Details section -->
@@ -78,7 +92,7 @@
                 <h2>Order Details</h2>
                 <div>
                     <label for="arrivalDate">Arrival date</label>
-                    <input type="date" id="arrivalDate" name="arrivalDate" required>
+                    <input type="date" id="arrivalDate" name="arrivalDate" min="2025-09-30" required>
                 </div>
 
                 <div>
@@ -86,13 +100,13 @@
                     <select id="arrivalTime" name="arrivalTime" required></select>
                 </div>
 
-                <div>
+                <div id="deliveryOptionsGroup">
                     <label>
                         <input type="radio" name="deliveryOption" value="delivery" required>
                         Food delivery
                     </label>
                     <label>
-                        <input type="radio" name="deliveryOption" value="pickup" required>
+                        <input type="radio" name="deliveryOption" value="pickup">
                         Self Pickup
                     </label>
                 </div>
@@ -148,7 +162,7 @@
     <!-- Modal for login -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
+            <span class="close-button">&times;</span>
             <div class="login-form">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -162,6 +176,19 @@
                     <h4 id="loginStatus"></h4>
                 </div>
                 <button class="login-button" id="loginButton" type="submit">Log In</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for empty order -->
+    <div id="emptyOrderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="empty-order-message">
+                <span class="icon">🛒</span>
+                <h3>Cannot Submit Order</h3>
+                <p>Your basket is empty! Please add some items to your order before submitting.</p>
+                <button id="ok-button" class="ok-button">OK, Got It</button>
             </div>
         </div>
     </div>

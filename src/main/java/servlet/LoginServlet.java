@@ -180,7 +180,7 @@ public class LoginServlet extends HttpServlet {
         response.getWriter().write(responseJson.toString());
     }
 
-    // Inner class thatRepresents the login credentials submitted by the user.
+    // Inner class that represents the login credentials submitted by the user.
     private static class LoginCredentials {
         private String email;
         private String password;

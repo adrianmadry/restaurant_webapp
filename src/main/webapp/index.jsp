@@ -9,7 +9,7 @@
     <title>Restaurant App</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" type="text/css" href="css/loginModal.css">
-    <script src="js/loginModal.js"></script>
+    <script type="module" src="js/login/loginInit.js?v=${timestamp}"></script>
 </head>
 
 
@@ -28,7 +28,7 @@
             <div class="loginbar">
                 <a id="loginButtonTopBar" href="javascript:void(0);">Log In</a>
                 <span id="userStatusTopBar" class="hidden"></span>
-                <a id="logoutButtonTopBar" class="hidden" href="javascript:void(0);" onclick="logoutUser()">Log Out</a>     
+                <a id="logoutButtonTopBar" class="hidden" href="javascript:void(0);">Log Out</a>     
             </div>
             
     </div>
@@ -46,7 +46,7 @@
     <!-- Modal for login -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
+            <span id="closeModalButton" class="close-button">&times;</span>
             <div class="login-form">
                 <div class="form-group">
                     <label for="email">Email</label>

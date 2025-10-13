@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="css/basket.css">
     <link rel="stylesheet" type="text/css" href="css/loginModal.css">
     <script src="js/basketLogic.js?v=${timestamp}"></script>
-    <script src="js/loginModal.js"></script>
+    <script type="module" src="js/login/loginInit.js?v=${timestamp}"></script>
    
 </head>
 
@@ -168,13 +168,14 @@
             <input type="hidden" id="basketItemsData" name="basketItemsData" value=""> <!-- hidden field to get data from basket and transfer to orderdetails -->
             <input type="hidden" id="basketTotalPrice" name="basketTotalPrice" value="">
             <button id="orderButton" type="submit">GO TO ORDER</button>
+            <button id="clearBasketButton" type="button">CLEAR BASKET</button>
         </form> 
     </div>
 
     <!-- Modal for login -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
+            <span class="close-button">&times;</span>
             <div class="login-form">
                 <div class="form-group">
                     <label for="email">Email</label>

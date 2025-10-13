@@ -81,3 +81,43 @@
 .login-status {
     text-align: center;
 }
+
+.empty-order-message {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.empty-order-message h3 {
+    color: #974527;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.empty-order-message p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.empty-order-message .icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.ok-button {
+    background-color: #eb5822;
+    color: whitesmoke;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.ok-button:hover {
+    background-color: #974527;
+}

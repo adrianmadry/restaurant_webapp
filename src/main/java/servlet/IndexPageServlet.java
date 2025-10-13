@@ -21,29 +21,28 @@ public class IndexPageServlet extends HttpServlet {
         MealDAO mealDAO = new MealDAO();
         List<Meal> allMenuItems = mealDAO.getAllMeals();
    
-        // filter meals by meal type and create related lists 
-        List<Meal> startersList = allMenuItems.stream()
-                    .filter(meal -> "STARTER".equalsIgnoreCase(meal.getType()))
-                    .collect(Collectors.toList());
-        List<Meal> soupsList = allMenuItems.stream()
-                    .filter(meal -> "SOUP".equalsIgnoreCase(meal.getType()))
-                    .collect(Collectors.toList());
-        List<Meal> mainsList = allMenuItems.stream()
-                    .filter(meal -> "MAIN".equalsIgnoreCase(meal.getType()))
-                    .collect(Collectors.toList());
-        List<Meal> beveragesList = allMenuItems.stream()
-                    .filter(meal -> "BEVERAGE".equalsIgnoreCase(meal.getType()))
-                    .collect(Collectors.toList());    
+        // Filter meals by meal type and create related lists 
+        List<Meal> startersList = filterMealsByType(allMenuItems, "STARTER");
+        List<Meal> soupsList = filterMealsByType(allMenuItems, "SOUP");
+        List<Meal> mainsList = filterMealsByType(allMenuItems, "MAIN");
+        List<Meal> beveragesList = filterMealsByType(allMenuItems, "BEVERAGE");
              
-        // add params to response
+        // Set request attributes
         request.setAttribute("allMenuItems", allMenuItems);
         request.setAttribute("starters", startersList);
         request.setAttribute("mains", mainsList);
         request.setAttribute("soups", soupsList);
         request.setAttribute("beverages", beveragesList);
         
-        // redirect user to site menu.jsp
+        // Redirect user to site menu.jsp
         RequestDispatcher dispatcher = request.getRequestDispatcher("menu.jsp");
         dispatcher.forward(request, response);
     } 
+
+    private static List<Meal> filterMealsByType(List<Meal> mealsList, String type) {
+        return mealsList.stream()
+            .filter(meal -> type.equalsIgnoreCase(meal.getType()))
+            .collect(Collectors.toList());
+    }
+
 }

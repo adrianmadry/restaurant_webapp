@@ -30,7 +30,7 @@ public class SessionStatusServlet extends HttpServlet {
             // User is logged in
             jsonResponse.addProperty("isLoggedIn", true);
             jsonResponse.addProperty("userId", session.getAttribute("userId").toString());
-            jsonResponse.addProperty("userName", session.getAttribute("userName").toString());
+            jsonResponse.addProperty("username", session.getAttribute("userName").toString());
         } else {
             // User is not logged in
             jsonResponse.addProperty("isLoggedIn", false);

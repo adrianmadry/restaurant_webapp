@@ -1,12 +1,17 @@
 .bgimage {
-    background-image: url('../img/bgmenu2.png');
+    background-image: url('../img/bg_menu.png');
     background-color: rgb(233, 158, 61);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .menu-container {
     color: white;
     text-align: center;
     padding: 50px 150px;
+    padding-right: 320px;
 }
 
 .menu-title {

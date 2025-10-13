@@ -50,7 +50,7 @@ public class SubmitOrderServlet extends HttpServlet {
                 return; 
             }
 
-            // Get current session (crete new one if not to store basket data)
+            // Get current session (create new one if not to store basket data)
             HttpSession session = request.getSession(true);
 
             // Check if user is logged in
@@ -148,13 +148,9 @@ public class SubmitOrderServlet extends HttpServlet {
         LOGGER.info("Stored pending order data for not logged in user");
 
         // Send JSON response requiring authentication
-        JsonObject responseJson = new JsonObject();
-        responseJson.addProperty("requiresAuth", true);
-        responseJson.addProperty("redirectUrl", "orderdetails.jsp?error=notLoggedIn");
-        responseJson.addProperty("message", "Please log in to complete your order");
-
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(responseJson.toString());
+        String errorMess = "Please log in to complete your order";
+        String redirectUrl = "orderdetails.jsp?error=notLoggedIn";
+        sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, errorMess, true, redirectUrl);
     }
 
     /**
@@ -224,20 +220,35 @@ public class SubmitOrderServlet extends HttpServlet {
 
     /**
      * Sends a JSON-formatted error response with the specified HTTP status code and error message.
-     * 
-     * @param response the HttpServletResponse to which the error response will be written
-     * @param statusCode the HTTP status code to set in the response
+     * Optionally includes authentication and redirect information in the response.
+     *
+     * @param response     the HttpServletResponse to which the error response will be written
+     * @param statusCode   the HTTP status code to set in the response
      * @param errorMessage the error message to include in the JSON response body
+     * @param requiresAuth (optional) true if authentication is required, false otherwise
+     * @param redirectUrl  (optional) the URL to redirect the client to, if applicable
      * @throws IOException if an input or output exception occurs while writing the response
      */
-    private void sendErrorResponse(HttpServletResponse response, int statusCode, String errorMessage) throws IOException {
+    private void sendErrorResponse(HttpServletResponse response, int statusCode, String errorMessage, Boolean requiresAuth, String redirectUrl) throws IOException {
         JsonObject errorJson = new JsonObject();
         errorJson.addProperty("success", false);
         errorJson.addProperty("error", errorMessage);
+        if (requiresAuth != null) {
+            errorJson.addProperty("requiresAuth", requiresAuth);
+        }
+        if (redirectUrl != null) {
+            errorJson.addProperty("redirectUrl", redirectUrl);
+        }
 
         response.setStatus(statusCode);
         response.getWriter().write(errorJson.toString());
     }
+
+    // Overloaded sendErrorResponse method
+    private void sendErrorResponse(HttpServletResponse response, int statusCode, String errorMessage) throws IOException {
+        sendErrorResponse(response, statusCode, errorMessage, null, null);
+    }
+
 
     /**
      * Sends a JSON-formatted success response with the specified HTTP status code and json body.

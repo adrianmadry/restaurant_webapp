@@ -128,6 +128,17 @@ label {
   color: #974527;
 }
 
+.input-error {
+    border: 2px solid red;
+    background-color: #f3abab;
+}
+.error-message {
+    display: block;
+    margin-top: 2px;
+    color: red;
+    font-size: 0.9em;
+}
+
 @media (max-width: 768px) {
   .form {
     flex-direction: column;
