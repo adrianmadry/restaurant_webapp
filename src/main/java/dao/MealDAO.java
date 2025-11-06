@@ -18,8 +18,8 @@ public class MealDAO {
 
     // CREATE - Add new meal to datbase
     public boolean createMeal(Meal meal) {
-        String sql = "INSERT INTO meals (name, type, description, price)" +  
-                      "VALUES (?, ?, ?, ?) RETURNING meal_id";
+        String sql = "INSERT INTO meals (name, type, description, price, image_path)" +  
+                      "VALUES (?, ?, ?, ?, ?) RETURNING meal_id";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -28,6 +28,7 @@ public class MealDAO {
                 stmt.setString(2, meal.getType());
                 stmt.setString(3, meal.getDescription());
                 stmt.setDouble(4, meal.getPrice()); 
+                stmt.setString(5, meal.getImagePath());
                 
                 // passing to user object data returned from db  
                 try (ResultSet returnedKeys = stmt.executeQuery()) {
@@ -59,8 +60,9 @@ public class MealDAO {
                         String type = resultSet.getString("type");
                         String description = resultSet.getString("description");
                         Double price = resultSet.getDouble("price");
+                        String image_path = resultSet.getString("image_path");
 
-                        return new Meal(mealId, name, type, description, price);  
+                        return new Meal(mealId, name, type, description, price, image_path);  
                     }
                 }
                      
@@ -86,8 +88,9 @@ public class MealDAO {
                         String type = resultSet.getString("type");
                         String description = resultSet.getString("description");
                         Double price = resultSet.getDouble("price");
+                        String image_path = resultSet.getString("image_path");
 
-                        Meal meal = new Meal(mealId, name, type, description, price);
+                        Meal meal = new Meal(mealId, name, type, description, price, image_path);
                         mealsList.add(meal);
                     }
                     return mealsList;
@@ -101,7 +104,7 @@ public class MealDAO {
 
     // UPDATE - Update meal data
     public boolean updateMeal(Meal meal) {
-        String sql = "UPDATE meals SET name = ?, type = ?, description = ?, price = ? " + 
+        String sql = "UPDATE meals SET name = ?, type = ?, description = ?, price = ?, image_path = ? " + 
                       "WHERE meal_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -111,7 +114,8 @@ public class MealDAO {
                 stmt.setString(2, meal.getType());
                 stmt.setString(3, meal.getDescription());
                 stmt.setDouble(4, meal.getPrice());
-                stmt.setInt(5, meal.getMealId());
+                stmt.setString(5, meal.getImagePath());
+                stmt.setInt(6, meal.getMealId());
                 
                 return stmt.executeUpdate() == 1; //check if exact one row was updated
                 

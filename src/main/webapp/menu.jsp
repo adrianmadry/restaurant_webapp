@@ -46,7 +46,7 @@
                         </div>
                         <div class="item-price">${meal.price}</div>
                         <div class="item-image">
-                            <img src="" alt="IMG">
+                            <img src="${pageContext.request.contextPath}/${meal.imagePath}" alt="IMG">
                         </div>
                         <div class="item-quantity">
                             <label>Qty:</label>
@@ -77,7 +77,7 @@
                         </div>
                         <div class="item-price">${meal.price}</div>
                         <div class="item-image">
-                            <img src="" alt="IMG">
+                            <img src="${pageContext.request.contextPath}/${meal.imagePath}" alt="IMG">
                         </div>
                         <div class="item-quantity">
                             <label>Qty:</label>
@@ -108,7 +108,7 @@
                         </div>
                         <div class="item-price">${meal.price}</div>
                         <div class="item-image">
-                            <img src="" alt="IMG">
+                            <img src="${pageContext.request.contextPath}/${meal.imagePath}" alt="IMG">
                         </div>
                         <div class="item-quantity">
                             <label>Qty:</label>
@@ -139,7 +139,7 @@
                         </div>
                         <div class="item-price">${meal.price}</div>
                         <div class="item-image">
-                            <img src="" alt="IMG">
+                            <img src="${pageContext.request.contextPath}/${meal.imagePath}" alt="IMG">
                         </div>
                         <div class="item-quantity">
                             <label>Qty:</label>

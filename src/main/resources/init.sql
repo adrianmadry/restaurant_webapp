@@ -1,8 +1,3 @@
-CREATE DATABASE restaurant_app;
-
-\c restaurant_app;
-
-DROP TABLE IF EXISTS users;
 
 CREATE TYPE role_type AS ENUM ('admin', 'customer');
 CREATE TABLE users(
@@ -19,7 +14,8 @@ CREATE TABLE meals(
     name VARCHAR(255) NOT NULL,
     type VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    price DECIMAL(10,2) NOT NULL CHECK (price > 0)
+    price DECIMAL(10,2) NOT NULL CHECK (price > 0),
+    image_path VARCHAR(255)
 );
 
 CREATE TABLE ingredients(

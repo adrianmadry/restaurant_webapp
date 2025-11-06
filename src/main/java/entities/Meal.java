@@ -8,24 +8,27 @@ public class Meal {
     protected String type;
     protected String description;
     protected Double price;
+    protected String imagePath;
     
     public Meal() {
 
     }
 
-    public Meal(String name, String type, String description, Double price) {
+    public Meal(String name, String type, String description, Double price, String imagePath) {
         this.name = capitalizeEachWord(name);
         this.type = type;
         this.description = description;
         this.price = price;
+        this.imagePath = imagePath;
     }
 
-    public Meal(int mealId, String name, String type, String description, Double price) {
+    public Meal(int mealId, String name, String type, String description, Double price, String imagePath) {
         this.mealId = mealId;
         this.name = capitalizeEachWord(name);
         this.type = type;
         this.description = description;
         this.price = price;
+        this.imagePath = imagePath;
     }
 
     public int getMealId() {
@@ -66,6 +69,14 @@ public class Meal {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+    
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override

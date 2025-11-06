@@ -1,0 +1,218 @@
+.bgimage {
+    background-image: url('../img/bg_index.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 40px 20px;
+    margin-top: 20px;
+}
+
+.confirmation-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 50px 60px;
+    max-width: 650px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-icon {
+    margin-bottom: 30px;
+}
+
+.checkmark {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 50px;
+    line-height: 80px;
+    animation: scaleIn 0.5s ease-in-out;
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.confirmation-title {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.confirmation-message {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.order-summary {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.order-summary h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    font-weight: 500;
+    color: #666;
+    font-size: 1rem;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.total-row {
+    margin-top: 15px;
+    padding-top: 20px;
+    border-top: 2px solid #e79822;
+}
+
+.total-row .summary-label,
+.total-row .summary-value {
+    font-size: 1.3rem;
+    color: #e79822;
+}
+
+.delivery-info {
+    background-color: #fff3e0;
+    border-left: 4px solid #e79822;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+}
+
+.delivery-info h3 {
+    font-size: 1.2rem;
+    color: #e79822;
+    margin-bottom: 10px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.delivery-info p {
+    color: #555;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.redirect-info {
+    margin-top: 30px;
+}
+
+.redirect-info p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+#countdown {
+    font-weight: bold;
+    color: #e79822;
+    font-size: 1.1rem;
+}
+
+.home-button {
+    display: inline-block;
+    padding: 15px 40px;
+    background-color: #e79822;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.home-button:hover {
+    background-color: #d68718;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 152, 34, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .confirmation-card {
+        padding: 30px 25px;
+    }
+
+    .confirmation-title {
+        font-size: 2rem;
+    }
+
+    .confirmation-message {
+        font-size: 1rem;
+    }
+
+    .order-summary {
+        padding: 20px;
+    }
+
+    .summary-label,
+    .summary-value {
+        font-size: 0.9rem;
+    }
+
+    .total-row .summary-label,
+    .total-row .summary-value {
+        font-size: 1.1rem;
+    }
+}

@@ -73,8 +73,12 @@ public class SubmitOrderServlet extends HttpServlet {
             // Clean up session data
             cleanUpSessionData(session);
 
+            // Store confirmed oreder data for confirmation page
+            session.setAttribute("confirmedOrderData", orderData);
+
             // Send success response
             sendSuccessResponse(response, orderData);
+
 
         } catch (Exception e) {
             LOGGER.severe("Error during order submission: " + e.getMessage());
@@ -102,8 +106,18 @@ public class SubmitOrderServlet extends HttpServlet {
 
             JsonArray basketItems = json.getAsJsonArray("basketItems");
             double basketTotalPrice = json.get("basketTotalPrice").getAsDouble();
+            String name = json.get("name").getAsString();
+            String city = json.get("city").getAsString();
+            String street = json.get("street").getAsString();
+            String houseNumber = json.get("houseNumber").getAsString();
+            String phone = json.get("phone").getAsString();
+            String orderNotes = json.get("orderNotes").getAsString();
+            String arrivalDate = json.get("arrivalDate").getAsString();
+            String arrivalTime = json.get("arrivalTime").getAsString();
+            String deliveryOption = json.get("deliveryOption").getAsString();
 
-            return new OrderData(basketItems, basketTotalPrice);
+            return new OrderData(basketItems, basketTotalPrice, name, city, street, houseNumber, phone, 
+                                orderNotes, arrivalDate, arrivalTime, deliveryOption);
         
         } catch (JsonSyntaxException | NumberFormatException e) {
             LOGGER.warning("Invalid JSON in order request: " + e.getMessage());
@@ -271,13 +285,80 @@ public class SubmitOrderServlet extends HttpServlet {
     /**
      * Inner class that represents the order data submitted by the user.
      */
-    private static class OrderData {
+    public static class OrderData {
         private final JsonArray basketItems;
         private final double basketTotalPrice;
+        private final String name;
+        private final String city;
+        private final String street;
+        private final String houseNumber;
+        private final String phone;
+        private final String orderNotes;
+        private final String arrivalDate;
+        private final String arrivalTime;
+        private final String deliveryOption;
 
-        OrderData(JsonArray basketItems, double basketTotalPrice) {
+
+        OrderData(JsonArray basketItems, double basketTotalPrice, String name, String city, 
+                String street, String houseNumber, String phone, String orderNotes, String arrivalDate, 
+                String arrivalTime, String deliveryOption) {
             this.basketItems = basketItems;
             this.basketTotalPrice = basketTotalPrice;
+            this.name = name;
+            this.city = city;
+            this.street = street;
+            this.houseNumber = houseNumber;
+            this.phone = phone;
+            this.orderNotes = orderNotes;
+            this.arrivalDate = arrivalDate;
+            this.arrivalTime = arrivalTime;
+            this.deliveryOption = deliveryOption;
         }
+
+        public JsonArray getBasketItems() {
+            return basketItems;
+        }
+
+        public double getBasketTotalPrice() {
+            return basketTotalPrice;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public String getHouseNumber() {
+            return houseNumber;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public String getOrderNotes() {
+            return orderNotes;
+        }
+
+        public String getArrivalDate() {
+            return arrivalDate;
+        }
+
+        public String getArrivalTime() {
+            return arrivalTime;
+        }
+
+        public String getDeliveryOption() {
+            return deliveryOption;
+        }
+        
+        
     }
 }
