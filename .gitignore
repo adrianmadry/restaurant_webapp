@@ -1,5 +1,2 @@
 target/
 .notatki/
-DockerFile
-docker-compose.yml
-src/main/resources/insert_menu_items.sql

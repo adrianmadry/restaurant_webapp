@@ -37,11 +37,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     })
     
-    // Close modal when clickin outside of it or pressing close button
+    // Close modal when pressing close button
     loginModal.addEventListener("click", function(event) {
-        if (event.target === loginModal || event.target.matches(".close-button")) {
+        if (event.target.matches(".close-button")) {
             closeLoginModal();
         }
     })
+
+    // Close modal when by pressing "ESC"
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") {
+            closeLoginModal();
+        }
+    })
+
 
 })
