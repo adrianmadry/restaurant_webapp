@@ -1,27 +1,27 @@
-# Etap 1: Budowanie aplikacji z Maven
+# Stage 1: Build the application
 FROM maven:3.8-openjdk-11 AS builder
 
 WORKDIR /app
 
-# Kopiowanie pliku pom.xml i pobieranie zależności
+# Copy pom.xml and download dependencies (cached layer)
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Kopiowanie kodu źródłowego i budowanie aplikacji
+# Copy source code and build
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests && ls -la target
 
-# Etap 2: Uruchomienie aplikacji na Tomcat
+# Stage 2: Runtime environment
 FROM tomcat:9-jdk11
 
-# Usunięcie domyślnych aplikacji Tomcat
+# Remove default Tomcat webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Kopiowanie zbudowanego pliku WAR z etapu buildowania
+# Copy the WAR file from build stage
 COPY --from=builder /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 
-# Ekspozycja portu
+# Expose Tomcat port
 EXPOSE 8080
 
-# Uruchomienie Tomcat
+# Start Tomcat
 CMD ["catalina.sh", "run"]
