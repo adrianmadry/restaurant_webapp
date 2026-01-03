@@ -1,0 +1,146 @@
+.bgimage {
+    background-image: url('../img/bg_menu.png');
+    background-color: rgb(233, 158, 61);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+
+.form-container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.60);
+  border-radius: 20px;
+}
+
+.form {
+  color: #333;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.form-section {
+  flex: 1;
+  padding: 20px;
+}
+
+#formOrderDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-section h2 {
+  color: #974527;
+  border-bottom: 2px solid  #974527;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+input[type="text"], input[type="tel"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.submit-button {
+  background-color: #eb5822;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.submit-button:hover {
+  background-color: #974527;
+}
+
+/* Basket Item Display */
+.basketItems {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.basket-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.basket-table th {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 2px solid #974527;
+  color: #974527;
+  font-weight: 600;
+}
+
+.basket-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.basket-summary {
+  margin-top: 15px;
+  border-top: 2px solid #974527;
+  padding-top: 15px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.price-row.total {
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 12px;
+  color: #974527;
+}
+
+.input-error {
+    border: 2px solid red;
+    background-color: #f3abab;
+}
+.error-message {
+    display: block;
+    margin-top: 2px;
+    color: red;
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+  .form {
+    flex-direction: column;
+  }
+}
