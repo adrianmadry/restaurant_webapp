@@ -1,17 +1,13 @@
 package entities;
 
 public class User {
-    
-    public enum RoleType {
-        ADMIN, CUSTOMER;
-    }
-    
-    protected int userId;
-    protected String username;
-    protected String password;
-    protected String email;
-    protected RoleType role;
-    protected String registrationDate;
+        
+    private int userId;
+    private String username;
+    private String password;
+    private String email;
+    private RoleType role;
+    private String registrationDate;
     
     public User() {
     }

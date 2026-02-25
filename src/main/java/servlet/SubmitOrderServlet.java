@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -20,8 +19,10 @@ import com.google.gson.JsonSyntaxException;
 import dao.MealDAO;
 import dao.OrderDAO;
 import dao.OrderMealsDAO;
+import dto.OrderData;
 import entities.Order;
 import entities.OrderMeals;
+import http.HttpConstants;
 import entities.Meal;
 
 
@@ -36,14 +37,14 @@ public class SubmitOrderServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
          // Set response content type 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        response.setContentType(HttpConstants.APPLICATION_JSON);
+        response.setCharacterEncoding(HttpConstants.UTF_8);
        
         try {
             // Handle request to get data from request
             OrderData orderData = parseOrderData(request);
-            LOGGER.info("Parsed order items: " + orderData.basketItems);
-            LOGGER.info("Parsed order price: " + orderData.basketTotalPrice);
+            LOGGER.info("Parsed order items: " + orderData.getBasketItems());
+            LOGGER.info("Parsed order price: " + orderData.getBasketTotalPrice());
 
             if (orderData == null) {
                 sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid request format");
@@ -98,26 +99,12 @@ public class SubmitOrderServlet extends HttpServlet {
     private OrderData parseOrderData(HttpServletRequest request) throws IOException {
         try {
             String requestBodyString = readRequestBody(request);
-            JsonObject json = gson.fromJson(requestBodyString, JsonObject.class);
+            OrderData orderData = gson.fromJson(requestBodyString, OrderData.class);
 
-            if (json == null || !json.has("basketItems") || !json.has("basketTotalPrice")) {
+            if (orderData == null || orderData.getBasketItems() == null || orderData.getBasketTotalPrice() <= 0) {
                 return null;
             }
-
-            JsonArray basketItems = json.getAsJsonArray("basketItems");
-            double basketTotalPrice = json.get("basketTotalPrice").getAsDouble();
-            String name = json.get("name").getAsString();
-            String city = json.get("city").getAsString();
-            String street = json.get("street").getAsString();
-            String houseNumber = json.get("houseNumber").getAsString();
-            String phone = json.get("phone").getAsString();
-            String orderNotes = json.get("orderNotes").getAsString();
-            String arrivalDate = json.get("arrivalDate").getAsString();
-            String arrivalTime = json.get("arrivalTime").getAsString();
-            String deliveryOption = json.get("deliveryOption").getAsString();
-
-            return new OrderData(basketItems, basketTotalPrice, name, city, street, houseNumber, phone, 
-                                orderNotes, arrivalDate, arrivalTime, deliveryOption);
+            return orderData;
         
         } catch (JsonSyntaxException | NumberFormatException e) {
             LOGGER.warning("Invalid JSON in order request: " + e.getMessage());
@@ -157,8 +144,8 @@ public class SubmitOrderServlet extends HttpServlet {
      */
     private void handleNotLoggedInUser(HttpSession session, HttpServletRequest request, OrderData orderData, HttpServletResponse response) throws IOException {
         // Store Order data in session
-        session.setAttribute("pendingbasketitems", gson.toJson(orderData.basketItems));
-        session.setAttribute("pendingbasketprice", String.valueOf(orderData.basketTotalPrice));
+        session.setAttribute("pendingbasketitems", gson.toJson(orderData.getBasketItems()));
+        session.setAttribute("pendingbasketprice", String.valueOf(orderData.getBasketTotalPrice()));
         LOGGER.info("Stored pending order data for not logged in user");
 
         // Send JSON response requiring authentication
@@ -181,11 +168,11 @@ public class SubmitOrderServlet extends HttpServlet {
         try {
             // Create new order in orders table
             Order order = new Order(userId);
-            order.setTotalPrice(orderData.basketTotalPrice);
+            order.setTotalPrice(orderData.getBasketTotalPrice());
             orderDAO.createOrder(order);
         
             // Create order meal entries in order_meals table
-            for (JsonElement item: orderData.basketItems) {
+            for (JsonElement item: orderData.getBasketItems()) {
                 JsonObject itemObj = item.getAsJsonObject();
 
                 if (!itemObj.has("mealId") || !itemObj.has("quantity")) {
@@ -263,13 +250,11 @@ public class SubmitOrderServlet extends HttpServlet {
         sendErrorResponse(response, statusCode, errorMessage, null, null);
     }
 
-
     /**
-     * Sends a JSON-formatted success response with the specified HTTP status code and json body.
+     * Sends a JSON-formatted success response indicating successful order submission.
      * 
-     * @param response the HttpServletResponse to which the success response will be written
-     * @param user the authenticated User object whose data will be included in the response
-     * @param hasPendingOrder true if the user has a pending order, false otherwise
+     * @param response  the HttpServletResponse to which the success response will be written
+     * @param orderData the OrderData object containing details of the submitted order (used for confirmation)
      * @throws IOException if an input or output exception occurs while writing the response
      */
     private void sendSuccessResponse(HttpServletResponse response, OrderData orderData) throws IOException {
@@ -280,85 +265,5 @@ public class SubmitOrderServlet extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(responseJson.toString());
-    }
-    
-    /**
-     * Inner class that represents the order data submitted by the user.
-     */
-    public static class OrderData {
-        private final JsonArray basketItems;
-        private final double basketTotalPrice;
-        private final String name;
-        private final String city;
-        private final String street;
-        private final String houseNumber;
-        private final String phone;
-        private final String orderNotes;
-        private final String arrivalDate;
-        private final String arrivalTime;
-        private final String deliveryOption;
-
-
-        OrderData(JsonArray basketItems, double basketTotalPrice, String name, String city, 
-                String street, String houseNumber, String phone, String orderNotes, String arrivalDate, 
-                String arrivalTime, String deliveryOption) {
-            this.basketItems = basketItems;
-            this.basketTotalPrice = basketTotalPrice;
-            this.name = name;
-            this.city = city;
-            this.street = street;
-            this.houseNumber = houseNumber;
-            this.phone = phone;
-            this.orderNotes = orderNotes;
-            this.arrivalDate = arrivalDate;
-            this.arrivalTime = arrivalTime;
-            this.deliveryOption = deliveryOption;
-        }
-
-        public JsonArray getBasketItems() {
-            return basketItems;
-        }
-
-        public double getBasketTotalPrice() {
-            return basketTotalPrice;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getCity() {
-            return city;
-        }
-
-        public String getStreet() {
-            return street;
-        }
-
-        public String getHouseNumber() {
-            return houseNumber;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public String getOrderNotes() {
-            return orderNotes;
-        }
-
-        public String getArrivalDate() {
-            return arrivalDate;
-        }
-
-        public String getArrivalTime() {
-            return arrivalTime;
-        }
-
-        public String getDeliveryOption() {
-            return deliveryOption;
-        }
-        
-        
     }
 }

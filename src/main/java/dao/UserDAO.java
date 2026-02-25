@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import entities.User;
-import entities.User.RoleType;
+import entities.RoleType;
 import util.DatabaseConnection;
+import util.JdbcStatementHelper;
 
 public class UserDAO {
 
@@ -16,21 +17,14 @@ public class UserDAO {
         
     }
 
-    // CREATE - Add new user to datbase
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?::role_type) RETURNING user_id, registration_date";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setString(1, user.getUsername());
-                stmt.setString(2, user.getPassword());
-                stmt.setString(3, user.getEmail());
-                stmt.setString(4, user.getRole().name().toLowerCase()); // convert role_type data form db to String
-                
-                // passing to user object data returned from db  
-                try (ResultSet returnedKeys = stmt.executeQuery()) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
+                JdbcStatementHelper.setStatementParams(statement, user.getUsername(), user.getPassword(), user.getEmail(), user.getRole());               
+                try (ResultSet returnedKeys = statement.executeQuery()) {
                     if (returnedKeys.next()) {
                         user.setUserId(returnedKeys.getInt("user_id"));
                         user.setRegistrationDate(returnedKeys.getDate("registration_date").toString());
@@ -44,27 +38,16 @@ public class UserDAO {
         return false;
     }
 
-    // READ - Get user by ID
     public User getUserById(int userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, userId);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
+                JdbcStatementHelper.setStatementParams(statement, userId);
+                try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) { 
-                        String username = resultSet.getString("username");
-                        String password = resultSet.getString("password");
-                        String email = resultSet.getString("email");
-                        //Convert String to RoleType enum
-                        String roleString = resultSet.getString("role");
-                        RoleType roleType = User.RoleType.valueOf(roleString.toUpperCase());
-
-                        String registrationDate = resultSet.getString("registration_date");
-    
-                        return new User(userId, username, password, email, roleType, registrationDate);  
+                        return mapRowFromQueryToUser(resultSet); 
                     }
                 }
                      
@@ -77,23 +60,13 @@ public class UserDAO {
     public User getUserByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, email);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
+                JdbcStatementHelper.setStatementParams(statement, email);
+                try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) { 
-                        Integer userId = resultSet.getInt("user_id");
-                        String username = resultSet.getString("username");
-                        String password = resultSet.getString("password");
-                        //Convert String to RoleType enum
-                        String roleString = resultSet.getString("role");
-                        RoleType roleType = User.RoleType.valueOf(roleString.toUpperCase());
-
-                        String registrationDate = resultSet.getString("registration_date");
-    
-                        return new User(userId, username, password, email, roleType, registrationDate);  
+                        return mapRowFromQueryToUser(resultSet); 
                     }
                 }
                      
@@ -101,31 +74,18 @@ public class UserDAO {
             System.err.println("Error retrieving user:  " + e.getMessage());
         }
         return null;
-
     }
 
-     // READ - Get all users
      public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
         List<User> usersList = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
-                    while (resultSet.next()) {
-                        Integer userId = resultSet.getInt("user_id");
-                        String username = resultSet.getString("username");
-                        String password = resultSet.getString("password");
-                        String email = resultSet.getString("email");
-                        //Convert String to RoleType enum
-                        String roleString = resultSet.getString("role");
-                        RoleType roleType = User.RoleType.valueOf(roleString.toUpperCase());
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                        String registrationDate = resultSet.getString("registration_date");
-    
-                        User user = new User(userId, username, password, email, roleType, registrationDate);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        User user = mapRowFromQueryToUser(resultSet);
                         usersList.add(user);
                     }
                     return usersList;
@@ -137,20 +97,14 @@ public class UserDAO {
         return usersList;
     }
 
-    // UPDATE - Update user data
     public boolean updateUser(User user) {
         String sql = "UPDATE users SET username = ?, password = ?, email = ?, role = ?::role_type WHERE user_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setString(1, user.getUsername());
-                stmt.setString(2, user.getPassword());
-                stmt.setString(3, user.getEmail());
-                stmt.setString(4, user.getRole().name().toLowerCase());
-                stmt.setInt(5, user.getUserId());
-
-                return stmt.executeUpdate() == 1; //check if exact one row was updated
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                JdbcStatementHelper.setStatementParams(statement, user.getUsername(), user.getPassword(), user.getEmail(), user.getRole(), user.getUserId());               
+                return statement.executeUpdate() == 1; //check if exact one row was updated
                 
         } catch (SQLException e) {
             System.err.println("Error updating user: " + e.getMessage());
@@ -158,15 +112,14 @@ public class UserDAO {
         return false;
     }
 
-    // DELETE - Delete User by ID
     public boolean deleteUserById(int userId) {
         String sql = "DELETE FROM users WHERE user_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, userId);
-
-                int rowsAffected = stmt.executeUpdate();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                JdbcStatementHelper.setStatementParams(statement, userId);
+                int rowsAffected = statement.executeUpdate();
                 if (rowsAffected == 0) {
                     throw new SQLException("User with ID " + userId + " not found");
                 }
@@ -180,17 +133,28 @@ public class UserDAO {
 
     public boolean authenticate(String email, String password) {
         String sql = "SELECT 1 FROM users WHERE email = ? AND password = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, email);
-                stmt.setString(2, password);
-                ResultSet resultSet = stmt.executeQuery();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                JdbcStatementHelper.setStatementParams(statement, email, password);
+                ResultSet resultSet = statement.executeQuery();
                 return resultSet.next();
         
         } catch (SQLException e) {
             System.err.println("Error authenticate user: " + e.getMessage());
         }
         return false;
+    }
+
+    private User mapRowFromQueryToUser(ResultSet resultSet) throws SQLException {
+        return new User(
+                    resultSet.getInt("user_id"),
+                    resultSet.getString("username"),
+                    resultSet.getString("password"),
+                    resultSet.getString("email"),
+                    RoleType.valueOf(resultSet.getString("role").toUpperCase()),
+                    resultSet.getString("registration_date")
+        );
     }
 
 }

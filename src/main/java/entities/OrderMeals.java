@@ -2,9 +2,9 @@ package entities;
 
 public class OrderMeals {
 
-    protected Order order;
-    protected Meal meal;
-    protected int quantity;
+    private Order order;
+    private Meal meal;
+    private int quantity;
 
     public OrderMeals() {
 

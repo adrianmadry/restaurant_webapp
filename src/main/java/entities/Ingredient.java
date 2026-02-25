@@ -2,10 +2,10 @@ package entities;
 
 public class Ingredient {
 
-    protected int ingredientId;
-    protected String name;
-    protected String unit;
-    protected Double stock;
+    private int ingredientId;
+    private String name;
+    private String unit;
+    private Double stock;
     
     public Ingredient() {
 

@@ -2,9 +2,9 @@ package entities;
 
 public class MealIngredients {
 
-    protected Meal meal;
-    protected Ingredient ingredient;
-    protected int reqQuantity;
+    private Meal meal;
+    private Ingredient ingredient;
+    private int reqQuantity;
 
     public MealIngredients() {
 

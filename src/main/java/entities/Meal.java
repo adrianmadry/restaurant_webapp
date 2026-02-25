@@ -3,12 +3,12 @@ package entities;
 
 public class Meal {
 
-    protected int mealId;
-    protected String name;
-    protected String type;
-    protected String description;
-    protected Double price;
-    protected String imagePath;
+    private int mealId;
+    private String name;
+    private String type;
+    private String description;
+    private Double price;
+    private String imagePath;
     
     public Meal() {
 

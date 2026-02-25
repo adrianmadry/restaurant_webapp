@@ -2,15 +2,11 @@ package entities;
 
 public class Order {
 
-    public enum OrderStatus {
-        PENDING, PREPARING, DELIVERED, CANCELLED
-    }
-
-    protected int orderId;
-    protected int userId;
-    protected Double totalPrice;
-    protected String orderDate;
-    protected OrderStatus orderStatus;
+    private int orderId;
+    private int userId;
+    private Double totalPrice;
+    private String orderDate;
+    private OrderStatus orderStatus;
 
     public Order() {
         this.orderStatus = OrderStatus.PENDING;
@@ -21,6 +17,11 @@ public class Order {
         this.orderStatus = OrderStatus.PENDING;
     }
 
+    public Order(int userId, Double totalPrice) {
+        this.userId = userId;
+        this.totalPrice = totalPrice;
+        this.orderStatus = OrderStatus.PENDING;
+    }
 
     public Order(int orderId, int userId, Double totalPrice, String orderDate, OrderStatus orderStatus) {
         this.orderId = orderId;

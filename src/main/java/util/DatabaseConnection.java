@@ -1,6 +1,5 @@
 package util;
 
-
 import java.io.InputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -26,14 +25,6 @@ public class DatabaseConnection {
             System.err.println("Failed to load database configuration: " + e.getMessage());
         }
     }
-
-    //     try (InputStream input = DatabaseConnection.class.getClassLoader().getResourceAsStream("config.properties")) {
-
-    //         properties.load(input);
-    //     } catch (IOException e) {
-    //         System.err.println("Failed to load database configuration: " + e.getMessage());
-    //     }
-    // }
 
     public static Connection getConnection() {
         try {

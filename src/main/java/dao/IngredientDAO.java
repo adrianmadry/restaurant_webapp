@@ -9,6 +9,7 @@ import java.util.List;
 
 import entities.Ingredient;
 import util.DatabaseConnection;
+import util.JdbcStatementHelper;
 
 public class IngredientDAO {
 
@@ -16,19 +17,14 @@ public class IngredientDAO {
         
     }
 
-// CREATE - Add new ingredient to database
     public boolean createIngredient(Ingredient ingredient) {
         String sql = "INSERT INTO ingredients (name, unit, stock) VALUES (?, ?, ?) RETURNING ingredient_id";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setString(1, ingredient.getName());
-                stmt.setString(2, ingredient.getUnit());
-                stmt.setDouble(3, ingredient.getStock());
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                // passing to ingredient object data returned from db  
-                try (ResultSet returnedKeys = stmt.executeQuery()) {
+                JdbcStatementHelper.setStatementParams(statement, ingredient.getName(), ingredient.getUnit(), ingredient.getStock());
+                try (ResultSet returnedKeys = statement.executeQuery()) {
 
                     if (returnedKeys.next()) {
                         ingredient.setIngredientId(returnedKeys.getInt("ingredient_id"));
@@ -42,22 +38,16 @@ public class IngredientDAO {
         return false;
     }
 
-    // READ - Get ingredient by ID
     public Ingredient getIngredientById(int ingredientId) {
         String sql = "SELECT * FROM ingredients WHERE ingredient_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, ingredientId);
-                
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
-                    if (resultSet.next()) { 
-                        String name = resultSet.getString("name");
-                        String unit = resultSet.getString("unit");
-                        Double stock = resultSet.getDouble("stock");
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                        return new Ingredient(ingredientId, name, unit, stock);  
+                JdbcStatementHelper.setStatementParams(statement, ingredientId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) { 
+                        return mapRowFromQueryToIngredient(resultSet);
                     }
                 }
                      
@@ -67,23 +57,16 @@ public class IngredientDAO {
         return null;
     }
 
-     // READ - Get all ingredients
-     public List<Ingredient> getAllIngredients() {
+    public List<Ingredient> getAllIngredients() {
         String sql = "SELECT * FROM ingredients";
         List<Ingredient> ingredientList = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
+                try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        Integer ingredientId = resultSet.getInt("ingredient_id");
-                        String name = resultSet.getString("name");
-                        String unit = resultSet.getString("unit");
-                        Double stock = resultSet.getDouble("stock");
-
-                        Ingredient ingredient = new Ingredient(ingredientId, name, unit, stock);
+                        Ingredient ingredient = mapRowFromQueryToIngredient(resultSet);
                         ingredientList.add(ingredient);
                     }
                     return ingredientList;
@@ -95,19 +78,14 @@ public class IngredientDAO {
         return ingredientList;
     }
 
-    // UPDATE - Update ingredient data
     public boolean updateIngredient(Ingredient ingredient) {
         String sql = "UPDATE ingredients SET name = ?, unit = ?, stock = ? WHERE ingredient_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setString(1, ingredient.getName());
-                stmt.setString(2, ingredient.getUnit());
-                stmt.setDouble(3, ingredient.getStock());
-                stmt.setInt(4, ingredient.getIngredientId());
-
-                return stmt.executeUpdate() == 1; //check if exact one row was updated
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                JdbcStatementHelper.setStatementParams(statement, ingredient.getName(), ingredient.getUnit(), ingredient.getStock(), ingredient.getIngredientId());
+                return statement.executeUpdate() == 1; //check if exact one row was updated
                 
         } catch (SQLException e) {
             System.err.println("Error updating ingredient: " + e.getMessage());
@@ -115,15 +93,14 @@ public class IngredientDAO {
         return false;
     }
 
-    // DELETE - Delete Ingredient by ID
     public boolean deleteIngredientById(int ingredientId) {
         String sql = "DELETE FROM ingredients WHERE ingredient_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, ingredientId);
-
-                int rowsAffected = stmt.executeUpdate();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                JdbcStatementHelper.setStatementParams(statement, ingredientId);
+                int rowsAffected = statement.executeUpdate();
                 if (rowsAffected == 0) {
                     throw new SQLException("Ingredient with ID " + ingredientId + " not found");
                 }
@@ -133,6 +110,15 @@ public class IngredientDAO {
             System.err.println("Error deleting ingredient: " + e.getMessage());
         }
         return false;
+    }
+
+    private Ingredient mapRowFromQueryToIngredient(ResultSet resultSet) throws SQLException {
+        return new Ingredient(
+                            resultSet.getInt("ingredient_id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("unit"),
+                            resultSet.getDouble("stock")
+                        );
     }
 
 }

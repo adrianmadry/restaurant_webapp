@@ -2,7 +2,7 @@
 <%@ page isELIgnored="false" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<%@ page import="servlet.SubmitOrderServlet.OrderData" %>
+<%@ page import="dto.OrderData" %>
 <%
     // Get Order data from session
     OrderData orderData = (OrderData) session.getAttribute("confirmedOrderData");

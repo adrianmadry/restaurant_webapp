@@ -10,6 +10,7 @@ import entities.Order;
 import entities.Meal;
 import entities.OrderMeals;
 import util.DatabaseConnection;
+import util.JdbcStatementHelper;
 
 public class OrderMealsDAO {
 
@@ -21,18 +22,14 @@ public class OrderMealsDAO {
         this.mealDao = new MealDAO();
     }
 
-    // CREATE - Add new Order Meals match to datbase
     public boolean createOrderMeals(OrderMeals orderMeals) {
         String sql = "INSERT INTO order_meals (order_id, meal_id, quantity) VALUES (?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setInt(1, orderMeals.getOrderId());
-                stmt.setInt(2, orderMeals.getMealId());
-                stmt.setInt(3, orderMeals.getQuantity());
-                
-                return stmt.executeUpdate() == 1; //check if exact one row is created
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                JdbcStatementHelper.setStatementParams(statement, orderMeals.getOrderId(), orderMeals.getMealId(), orderMeals.getQuantity());                
+                return statement.executeUpdate() == 1; //check if exact one row is created
     
         } catch (SQLException e) {
             System.err.println("Error adding Order Meals match: " + e.getMessage());
@@ -40,25 +37,16 @@ public class OrderMealsDAO {
         return false;
     }
 
-    // READ - Get Order Meals match
     public OrderMeals getOrderMealsByIds(int orderId, int mealId) {
         String sql = "SELECT * FROM order_meals WHERE order_id = ? AND meal_id = ?";
         
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, orderId);
-                stmt.setInt(2, mealId);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
+                JdbcStatementHelper.setStatementParams(statement, orderId, mealId);
+                try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) { 
-                        int quantity = resultSet.getInt("quantity");
-                        // retrieve objects for meal and order from DB 
-
-                        Order order = this.orderDao.getOrderById(orderId);
-                        Meal meal = this.mealDao.getMealById(mealId);
-                        
-                        return new OrderMeals(order, meal, quantity);  
+                        return mapRowFromQueryToOrderMeals(resultSet);
                     }
                 }
                      
@@ -68,25 +56,16 @@ public class OrderMealsDAO {
         return null;
     }
 
-     // READ - Get list of all Order Meals Matches
-     public List<OrderMeals> getAllOrderMeals() {
+    public List<OrderMeals> getAllOrderMeals() {
         String sql = "SELECT * FROM order_meals";
         List<OrderMeals> OrderMealsList = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
+                try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        int orderId = resultSet.getInt("order_id");
-                        int mealId = resultSet.getInt("meal_id");
-                        int quantity = resultSet.getInt("quantity");
-                        // retrieve objects for order and from DB 
-                        Order order = this.orderDao.getOrderById(orderId);
-                        Meal meal = this.mealDao.getMealById(mealId);
-
-                        OrderMeals orderMeals = new OrderMeals(order, meal, quantity); 
+                        OrderMeals orderMeals = mapRowFromQueryToOrderMeals(resultSet);
                         OrderMealsList.add(orderMeals);
                     }
                     return OrderMealsList;
@@ -98,18 +77,14 @@ public class OrderMealsDAO {
         return OrderMealsList;
     }
 
-    // UPDATE - Update Order Meals match data
     public boolean updateOrderMeals(OrderMeals orderMeals) {
         String sql = "UPDATE order_meals SET quantity = ? WHERE meal_id = ? AND order_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setInt(1, orderMeals.getQuantity());
-                stmt.setInt(2, orderMeals.getMealId());
-                stmt.setInt(3, orderMeals.getOrderId());
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                return stmt.executeUpdate() == 1; //check if exact one row was updated
+                JdbcStatementHelper.setStatementParams(statement, orderMeals.getQuantity(), orderMeals.getMealId(), orderMeals.getOrderId());
+                return statement.executeUpdate() == 1; //check if exact one row was updated
                 
         } catch (SQLException e) {
             System.err.println("Error updating Order Meals match: " + e.getMessage());
@@ -117,16 +92,14 @@ public class OrderMealsDAO {
         return false;
     }
 
-    // DELETE - Delete Order Meals match by IDs
     public boolean deleteOrderMealsByIds(int orderId, int mealId) {
         String sql = "DELETE FROM order_meals WHERE order_id = ? AND meal_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, orderId);
-                stmt.setInt(2, mealId);
-
-                int rowsAffected = stmt.executeUpdate();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+                
+                JdbcStatementHelper.setStatementParams(statement, orderId, mealId);
+                int rowsAffected = statement.executeUpdate();
                 if (rowsAffected == 0) {
                     throw new SQLException("No match found for order with ID " + orderId + " and meal with ID " + mealId);
                 }
@@ -138,4 +111,14 @@ public class OrderMealsDAO {
         return false;
     }
 
+    private OrderMeals mapRowFromQueryToOrderMeals(ResultSet resultSet) throws SQLException {
+        Order order = this.orderDao.getOrderById(resultSet.getInt("order_id"));
+        Meal meal = this.mealDao.getMealById(resultSet.getInt("meal_id"));
+
+        return new OrderMeals(
+                            order, 
+                            meal, 
+                            resultSet.getInt("quantity")
+                        );
+    }
 }

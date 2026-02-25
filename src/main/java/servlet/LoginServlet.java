@@ -9,7 +9,9 @@ import com.google.gson.JsonSyntaxException;
 import java.util.logging.Logger;
 
 import dao.UserDAO;
+import dto.LoginCredentials;
 import entities.User;
+import http.HttpConstants;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,8 +28,8 @@ public class LoginServlet extends HttpServlet {
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Set response content type 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        response.setContentType(HttpConstants.APPLICATION_JSON);
+        response.setCharacterEncoding(HttpConstants.UTF_8);
 
         try {
             // Handle request to get login credentials
@@ -37,19 +39,19 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-            LOGGER.info("Login attempt for email: " + loginCredentials.email);
+            LOGGER.info("Login attempt for email: " + loginCredentials.getEmail());
 
             // Authenticate user in database
-            if (!userDao.authenticate(loginCredentials.email, loginCredentials.password)) {
-                LOGGER.warning("Failed login attempt for email: " + loginCredentials.email);
+            if (!userDao.authenticate(loginCredentials.getEmail(), loginCredentials.getPassword())) {
+                LOGGER.warning("Failed login attempt for email: " + loginCredentials.getEmail());
                 sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid credentials");
                 return;
             }
 
             // Get user data and create session
-            User user = userDao.getUserByEmail(loginCredentials.email);
+            User user = userDao.getUserByEmail(loginCredentials.getEmail());
             if (user == null) {
-                LOGGER.severe("User authenticated but not found in database: " + loginCredentials.email);
+                LOGGER.severe("User authenticated but not found in database: " + loginCredentials.getEmail());
                 sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Login error");
                 return;
             }
@@ -180,14 +182,4 @@ public class LoginServlet extends HttpServlet {
         response.getWriter().write(responseJson.toString());
     }
 
-    // Inner class that represents the login credentials submitted by the user.
-    private static class LoginCredentials {
-        private String email;
-        private String password;
-
-        LoginCredentials(String email, String password) {
-            this.email = email;
-            this.password = password;
-        }
-    }
 }

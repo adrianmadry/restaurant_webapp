@@ -9,6 +9,7 @@ import java.util.List;
 
 import entities.Meal;
 import util.DatabaseConnection;
+import util.JdbcStatementHelper;
 
 public class MealDAO {
 
@@ -16,22 +17,16 @@ public class MealDAO {
 
     }
 
-    // CREATE - Add new meal to datbase
     public boolean createMeal(Meal meal) {
         String sql = "INSERT INTO meals (name, type, description, price, image_path)" +  
                       "VALUES (?, ?, ?, ?, ?) RETURNING meal_id";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setString(1, meal.getName());
-                stmt.setString(2, meal.getType());
-                stmt.setString(3, meal.getDescription());
-                stmt.setDouble(4, meal.getPrice()); 
-                stmt.setString(5, meal.getImagePath());
+                      
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                // passing to user object data returned from db  
-                try (ResultSet returnedKeys = stmt.executeQuery()) {
+                JdbcStatementHelper.setStatementParams(statement, meal.getName(), meal.getType(), 
+                                                        meal.getDescription(), meal.getPrice(), meal.getImagePath());                
+                try (ResultSet returnedKeys = statement.executeQuery()) {
 
                     if (returnedKeys.next()) {
                         meal.setMealId(returnedKeys.getInt("meal_id"));
@@ -40,29 +35,21 @@ public class MealDAO {
                 return true;
     
         } catch (SQLException e) {
-            System.err.println("Error adding user: " + e.getMessage());
+            System.err.println("Error adding meal: " + e.getMessage());
         }
         return false;
     }
 
-    // READ - Get meal by ID
     public Meal getMealById(int mealId) {
         String sql = "SELECT * FROM meals WHERE meal_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, mealId);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
+                JdbcStatementHelper.setStatementParams(statement, mealId);                
+                try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) { 
-                        String name = resultSet.getString("name");
-                        String type = resultSet.getString("type");
-                        String description = resultSet.getString("description");
-                        Double price = resultSet.getDouble("price");
-                        String image_path = resultSet.getString("image_path");
-
-                        return new Meal(mealId, name, type, description, price, image_path);  
+                        return mapRowFromQueryToMeal(resultSet);
                     }
                 }
                      
@@ -72,25 +59,16 @@ public class MealDAO {
         return null;
     }
 
-    // READ - Get all meals
     public List<Meal> getAllMeals() {
         String sql = "SELECT * FROM meals";
         List<Meal> mealsList = new ArrayList<>();
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                try (ResultSet resultSet = stmt.executeQuery()) {
-                    // iterate through data retrieved from DB
+                try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        Integer mealId = resultSet.getInt("meal_id");
-                        String name = resultSet.getString("name");
-                        String type = resultSet.getString("type");
-                        String description = resultSet.getString("description");
-                        Double price = resultSet.getDouble("price");
-                        String image_path = resultSet.getString("image_path");
-
-                        Meal meal = new Meal(mealId, name, type, description, price, image_path);
+                        Meal meal = mapRowFromQueryToMeal(resultSet);
                         mealsList.add(meal);
                     }
                     return mealsList;
@@ -102,22 +80,16 @@ public class MealDAO {
         return mealsList;
     }
 
-    // UPDATE - Update meal data
     public boolean updateMeal(Meal meal) {
         String sql = "UPDATE meals SET name = ?, type = ?, description = ?, price = ?, image_path = ? " + 
                       "WHERE meal_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                // complete sql statement
-                stmt.setString(1, meal.getName());
-                stmt.setString(2, meal.getType());
-                stmt.setString(3, meal.getDescription());
-                stmt.setDouble(4, meal.getPrice());
-                stmt.setString(5, meal.getImagePath());
-                stmt.setInt(6, meal.getMealId());
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
                 
-                return stmt.executeUpdate() == 1; //check if exact one row was updated
+                JdbcStatementHelper.setStatementParams(statement, meal.getName(), meal.getType(), meal.getDescription(), 
+                                                    meal.getPrice(), meal.getImagePath(), meal.getMealId());                
+                return statement.executeUpdate() == 1; //check if exact one row was updated
                 
         } catch (SQLException e) {
             System.err.println("Error updating meal: " + e.getMessage());
@@ -125,15 +97,15 @@ public class MealDAO {
         return false;
     }
 
-    // DELETE - Delete Meal by ID
     public boolean deleteMealById(int mealId) {
         String sql = "DELETE FROM meals WHERE meal_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, mealId);
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                int rowsAffected = stmt.executeUpdate();
+                JdbcStatementHelper.setStatementParams(statement, mealId);
+                int rowsAffected = statement.executeUpdate();
+                
                 if (rowsAffected == 0) {
                     throw new SQLException("Meal with ID " + mealId + " not found");
                 }
@@ -143,6 +115,17 @@ public class MealDAO {
             System.err.println("Error deleting meal: " + e.getMessage());
         }
         return false;
+    }
+
+    private Meal mapRowFromQueryToMeal(ResultSet resultSet) throws SQLException {
+        return new Meal(
+                        resultSet.getInt("meal_id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("type"),
+                        resultSet.getString("description"),
+                        resultSet.getDouble("price"),
+                        resultSet.getString("image_path")
+                    );
     }
 
 }
